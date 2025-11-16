@@ -1,0 +1,59 @@
+//
+// Created by Caelum Ellis on 17/11/2025.
+//
+#include "DelaunayWrapper.h"
+#include <set>
+
+DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, double>>& points)
+{
+    DTResult result;
+    std::set<std::pair<int,int>> uniquePairs;
+
+    // Convert (x,y) pairs to flat format for SimpleDelaunay
+    std::vector<double> flat;
+    flat.reserve(points.size() * 2);
+
+    for (auto& p : points) {
+        flat.push_back(p.first);
+        flat.push_back(p.second);
+    }
+
+    // Run triangulation
+    std::vector<int> connectivity = SimpleDelaunay::compute<2>(flat);
+
+    // Convert triangle triples and extract edges
+    for (size_t i = 0; i < connectivity.size(); i += 3) {
+        int a = connectivity[i];
+        int b = connectivity[i + 1];
+        int c = connectivity[i + 2];
+
+        // Store triangle
+        result.triangles.emplace_back(Triangle{a, b, c});
+
+        auto addEdge = [&](int x, int y){
+            if (x > y) std::swap(x, y);
+            uniquePairs.insert({x, y});
+        };
+
+        addEdge(a,b);
+        addEdge(b,c);
+        addEdge(c,a);
+    }
+
+    // Convert deduplicated edges to weighted edges
+    for (auto &p : uniquePairs) {
+        auto& p1 = points[p.first];
+        auto& p2 = points[p.second];
+
+        double dx = p1.first - p2.first;
+        double dy = p1.second - p2.second;
+
+        result.edges.push_back({
+            p.first, p.second,
+            std::sqrt(dx*dx + dy*dy)
+        });
+    }
+
+    return result;
+}
+
