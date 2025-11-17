@@ -14,7 +14,8 @@ add_executable(DT_CES_SA ${SOURCES} ${HEADERS}
         include/SimpleDelaunay.h
         include/DelaunayWrapper.h
         src/DelaunayWrapper.cpp
-        include/GraphState.h)
+        include/GraphState.h
+        include/EdgeKey.h)
 
 # Tell compiler where to find headers
 target_include_directories(DT_CES_SA PRIVATE include)

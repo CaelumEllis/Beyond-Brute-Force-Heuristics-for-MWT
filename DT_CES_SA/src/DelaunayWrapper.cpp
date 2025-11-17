@@ -2,12 +2,16 @@
 // Created by Caelum Ellis on 17/11/2025.
 //
 #include "DelaunayWrapper.h"
+#include "EdgeKey.h"
+#include <unordered_set>
 #include <set>
+
 
 DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, double>>& points)
 {
     DTResult result;
-    std::set<std::pair<int,int>> uniquePairs;
+    std::unordered_set<EdgeKey, EdgeKeyHash> uniquePairs;
+    // std::set<std::pair<int,int>> uniquePairs;
 
     // Convert (x,y) pairs to flat format for SimpleDelaunay
     std::vector<double> flat;
