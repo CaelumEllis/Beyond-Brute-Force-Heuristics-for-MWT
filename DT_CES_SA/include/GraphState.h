@@ -10,21 +10,7 @@
 #include <unordered_set>
 #include <cmath>
 #include "DelaunayWrapper.h"
-
-struct EdgeKey {
-    int u, v;
-    EdgeKey(int a, int b) {
-        if (a < b) { u = a; v = b; }
-        else { u = b; v = a; }
-    }
-    bool operator==(const EdgeKey &o) const { return u == o.u && v == o.v; }
-};
-
-struct EdgeKeyHash {
-    size_t operator()(const EdgeKey& e) const {
-        return std::hash<int>()(e.u) ^ (std::hash<int>()(e.v) << 1);
-    }
-};
+#include "EdgeKey.h"
 
 class GraphState {
 
