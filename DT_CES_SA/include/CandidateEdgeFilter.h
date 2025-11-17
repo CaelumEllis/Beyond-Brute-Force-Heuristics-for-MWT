@@ -7,33 +7,57 @@
 
 #include <vector>
 #include "GraphState.h"
-
-
-
-  // CandidateEdgeFilter builds a subset of edges that are likely to be
-  // valid candidates for edge flipping, due to being long.
-  //
-  // Heuristic:
-  //   - For each vertex, take the k (2-3) longest incident edges.
-  //   - Globally, also take the top p fraction (1/3) of longest edges.
-  //   - Return the union of these sets with duplicates removed.
+#include "FlipCriteria.h"
 
 class CandidateEdgeFilter {
+
 public:
 
-      // Build candidate edge set from a Delaunay-based GraphState.
-      //  Args:
-      //      gs                - The underlying graph (points, edges, triangles).
-      //      perVertex         - How many longest edges to keep per vertex (default 3).
-      //      globalFraction    - Fraction of global longest edges to keep (default 1/3).
-      //                          Clamped to [0,1]. If >0 but <1/|E|, at least 1 edge kept.
-      //  Returns:
-      //      Vector            - contains unique Edge objects (same (u,v,weight) as in gs.edges).
+    struct CandidatePolicy {
+        int    perVertex;
+        double globalFraction;
+    };
 
+    // Global single source of truth
+    inline static CandidatePolicy defaultPolicy{2, 1.0/10.0};
+
+    // Explicit build with a supplied policy
     static std::vector<Edge> buildCandidateSet(
         const GraphState& gs,
-        int    perVertex      = 1,
-        double globalFraction = 1.0 / 5.0
+        const CandidatePolicy& policy
+    );
+
+    // Convenience wrapper: always uses globally defined policy
+    static std::vector<Edge> buildCandidateSet(const GraphState& gs) {
+        return buildCandidateSet(gs, defaultPolicy);
+    }
+
+    // Explicit update with a supplied policy
+    static void updateCandidatesAfterFlip(
+        std::vector<Edge>& candidates,
+        const GraphState& gs,
+        const FlipResult& flip,
+        const CandidatePolicy& policy,
+        bool aggressiveUpdate = false
+    );
+
+    // Convenience wrapper: always uses global policy
+    static void updateCandidatesAfterFlip(
+        std::vector<Edge>& candidates,
+        const GraphState& gs,
+        const FlipResult& flip,
+        bool aggressiveUpdate = false
+    ) {
+        updateCandidatesAfterFlip(candidates, gs, flip, defaultPolicy, aggressiveUpdate);
+    }
+
+private:
+    static bool isGoodCandidate(
+        const Edge& e,
+        const GraphState& gs,
+        const CandidatePolicy& policy
     );
 };
+
+
 #endif // CANDIDATEEDGEFILTER_H

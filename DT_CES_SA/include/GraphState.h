@@ -1,9 +1,9 @@
 //
-// Created by Caelum Ellis on 17/11/2025.
+// Created by Caelum Ellis on 16/11/2025.
 //
-
 #ifndef GRAPHSTATE_H
 #define GRAPHSTATE_H
+
 
 #include <vector>
 #include <unordered_map>
@@ -12,11 +12,15 @@
 #include "DelaunayWrapper.h"
 #include "EdgeKey.h"
 
+struct FlipResult;
+
 class GraphState {
 
 public:
     std::vector<std::pair<double,double>> points;
     std::vector<Edge> edges;
+    std::unordered_map<EdgeKey, Edge, EdgeKeyHash> edgeTable;
+    std::unordered_map<EdgeKey, size_t, EdgeKeyHash> edgeIndex;
     std::vector<Triangle> triangles;
 
     // adjacency list (for quick graph traversal if needed)
@@ -30,32 +34,34 @@ public:
     GraphState(const DTResult &dt, const std::vector<std::pair<double,double>>& pts)
         : points(pts), edges(dt.edges), triangles(dt.triangles)
     {
+        for (size_t i = 0; i < edges.size(); ++i) {
+            EdgeKey k(edges[i].u, edges[i].v);
+            edgeIndex[k] = i;
+            edgeTable[k] = edges[i];
+        }
         buildAdjacency();
         buildEdgeTriangleMap();
     }
 
+    // Performs the flip from diagonal (b,d) to (a,c), using a validated FlipResult
+    void FlipEdge(const FlipResult& f);
+
+    bool hasEdge(int u, int v) const {
+        return edgeTable.contains(EdgeKey(u,v));
+    }
+
+    const Edge* getEdge(int u, int v) const {
+        auto it = edgeTable.find(EdgeKey(u,v));
+        return it == edgeTable.end() ? nullptr : &(it->second);
+    }
+
 private:
+    void buildAdjacency();
+    void buildEdgeTriangleMap();
+    void addTriangleEdge(int x, int y, int triIdx);
 
-    void buildAdjacency() {
-        for (auto &e : edges) {
-            adjacency[e.u].insert(e.v);
-            adjacency[e.v].insert(e.u);
-        }
-    }
-
-    void buildEdgeTriangleMap() {
-        for (size_t i = 0; i < triangles.size(); ++i) {
-            auto &t = triangles[i];
-            addTriangleEdge(t.a, t.b, i);
-            addTriangleEdge(t.b, t.c, i);
-            addTriangleEdge(t.c, t.a, i);
-        }
-    }
-
-    void addTriangleEdge(int x, int y, int triIdx) {
-        EdgeKey key(x, y);
-        edgeToTriangles[key].push_back(triIdx);
-    }
+    void removeEdge(int u, int v);
+    void addEdge(int u, int v);
 };
 
 #endif //GRAPHSTATE_H
