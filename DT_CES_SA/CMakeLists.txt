@@ -7,7 +7,10 @@ set(CMAKE_CXX_STANDARD 20)
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "include/*.h")
 
-add_executable(DT_CES_SA ${SOURCES} ${HEADERS})
+add_executable(DT_CES_SA ${SOURCES} ${HEADERS}
+        include/FlipCriteria.h
+        src/FlipCriteria.cpp
+        src/GraphState.cpp)
 
 # Header include path
 target_include_directories(DT_CES_SA PRIVATE include)
