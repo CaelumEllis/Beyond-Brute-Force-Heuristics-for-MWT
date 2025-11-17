@@ -2,10 +2,10 @@
 // Created by Caelum Ellis on 17/11/2025.
 //
 #include "DelaunayWrapper.h"
-#include "EdgeKey.h"
+#include <EdgeKey.h>
 #include <unordered_set>
 #include <set>
-
+#include <EdgeKey.h>
 
 DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, double>>& points)
 {
@@ -45,18 +45,20 @@ DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, do
     }
 
     // Convert deduplicated edges to weighted edges
-    for (auto &p : uniquePairs) {
-        auto& p1 = points[p.first];
-        auto& p2 = points[p.second];
+    for (const auto& p : uniquePairs) {
+
+        auto& p1 = points[p.u];
+        auto& p2 = points[p.v];
 
         double dx = p1.first - p2.first;
         double dy = p1.second - p2.second;
 
-        result.edges.push_back({
-            p.first, p.second,
-            std::sqrt(dx*dx + dy*dy)
+        result.edges.push_back(Edge{
+            p.u, p.v,
+            std::sqrt(dx * dx + dy * dy)
         });
     }
+
 
     return result;
 }
