@@ -1,7 +1,6 @@
 //
 // Created by Caelum Ellis on 16/11/2025.
 //
-
 #ifndef CANDIDATEEDGEFILTER_H
 #define CANDIDATEEDGEFILTER_H
 
@@ -18,21 +17,13 @@ public:
         double globalFraction;
     };
 
-    // Global single source of truth
-    inline static CandidatePolicy defaultPolicy{2, 1.0/10.0};
-
-    // Explicit build with a supplied policy
+    // Full explicit build
     static std::vector<Edge> buildCandidateSet(
         const GraphState& gs,
         const CandidatePolicy& policy
     );
 
-    // Convenience wrapper: always uses globally defined policy
-    static std::vector<Edge> buildCandidateSet(const GraphState& gs) {
-        return buildCandidateSet(gs, defaultPolicy);
-    }
-
-    // Explicit update with a supplied policy
+    // Explicit update after flip
     static void updateCandidatesAfterFlip(
         std::vector<Edge>& candidates,
         const GraphState& gs,
@@ -41,23 +32,26 @@ public:
         bool aggressiveUpdate = false
     );
 
-    // Convenience wrapper: always uses global policy
+    // Convenience overloads (declared only, defined in .cpp)
+    static std::vector<Edge> buildCandidateSet(const GraphState& gs);
     static void updateCandidatesAfterFlip(
         std::vector<Edge>& candidates,
         const GraphState& gs,
         const FlipResult& flip,
         bool aggressiveUpdate = false
-    ) {
-        updateCandidatesAfterFlip(candidates, gs, flip, defaultPolicy, aggressiveUpdate);
-    }
+    );
 
 private:
+
     static bool isGoodCandidate(
         const Edge& e,
         const GraphState& gs,
         const CandidatePolicy& policy
     );
+
+    inline static CandidatePolicy defaultPolicy{4, 0.50};
+
+
 };
 
-
-#endif // CANDIDATEEDGEFILTER_H
+#endif

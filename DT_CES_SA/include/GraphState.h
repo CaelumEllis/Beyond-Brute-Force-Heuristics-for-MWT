@@ -4,11 +4,9 @@
 #ifndef GRAPHSTATE_H
 #define GRAPHSTATE_H
 
-
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-#include <cmath>
 #include "DelaunayWrapper.h"
 #include "EdgeKey.h"
 

@@ -29,13 +29,8 @@ struct DTResult {
 class DelaunayWrapper {
 
 public:
-    /**
-     * Computes a 2D Delaunay triangulation using SimpleDelaunay and returns
-     * both deduplicated weighted edges and triangle connectivity.
-     *
-     * @param points - vector of (x,y) coordinates
-     * @return DTResult containing {edges, triangles}
-     */
+    // Takes points of type (x,y) and returns
+    // DTResult (2D delaunay) of type {edges, triangles}
     static DTResult translateOutput(const std::vector<std::pair<double,double>>& points);
 };
 
