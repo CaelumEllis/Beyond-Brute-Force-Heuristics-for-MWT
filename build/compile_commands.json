@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/CandidateEdgeFilter.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/CandidateEdgeFilter.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/CandidateEdgeFilter.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/CandidateEdgeFilter.cpp.o"
+},
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/DelaunayWrapper.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/DelaunayWrapper.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/DelaunayWrapper.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/DelaunayWrapper.cpp.o"
+},
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/FlipCriteria.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/FlipCriteria.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/FlipCriteria.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/FlipCriteria.cpp.o"
+},
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/GraphState.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/GraphState.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/GraphState.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/GraphState.cpp.o"
+},
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/SimulatedAnnealing.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/SimulatedAnnealing.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/SimulatedAnnealing.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/SimulatedAnnealing.cpp.o"
+},
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/load_coordinates.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/load_coordinates.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/load_coordinates.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/load_coordinates.cpp.o"
+},
+{
+  "directory": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/build",
+  "command": "/usr/bin/clang++  -I\"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/include\" -g -std=gnu++20 -arch arm64 -Wall -Wextra -Wpedantic -g -Og -o CMakeFiles/DT_CES_SA.dir/src/main.cpp.o -c \"/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/main.cpp\"",
+  "file": "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/DT_CES_SA/src/main.cpp",
+  "output": "CMakeFiles/DT_CES_SA.dir/src/main.cpp.o"
+}
+]
