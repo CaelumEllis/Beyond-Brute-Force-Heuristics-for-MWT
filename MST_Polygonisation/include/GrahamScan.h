@@ -25,7 +25,7 @@ double distSq(Point a, Point b) {
 }
 
  // Function to find the convex hull of a set of 2D points
-std::vector<std::pair<double, double>> findConvexHull(std::vector<std::pair<double, double>> points) {
+std::vector<std::pair<double, double> > findConvexHull(std::vector<std::pair<double, double> > points) {
 
     // Store number of points points
     int n = points.size();

@@ -16,7 +16,7 @@ namespace FaceFinder {
 	 * Returns a vector of vectors, where each vector contains a list of indices corresponding to each point.
 	 * The indexing is the same as the input indexing of points (good for constructing graphs later)
 	 */
-  	std::vector<std::vector<size_t>> find_faces(std::vector<Point> vertices, std::vector<std::vector<size_t>> adj) {
+  	std::vector<std::vector<size_t>> find_faces(std::vector<Point> &vertices, std::vector<std::vector<size_t>> &adj) {
     size_t n = vertices.size();
     std::vector<std::vector<char>> used(n);
     for (size_t i = 0; i < n; i++) {
@@ -60,7 +60,7 @@ namespace FaceFinder {
             std::reverse(face.begin(), face.end());
             Point p1 = vertices[face[0]];
             double sum = 0;
-            for (int j = 0; j < face.size(); ++j) {
+            for (size_t j = 0; j < face.size(); ++j) {
                 Point p2 = vertices[face[j]];
                 Point p3 = vertices[face[(j + 1) % face.size()]];
                 sum += (p2 - p1).cross(p3 - p2);

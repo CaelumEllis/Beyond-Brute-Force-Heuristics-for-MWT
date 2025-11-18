@@ -4,13 +4,13 @@
 #include <vector>
 #include <string>
 
-#include "includes/GrahamScan.h"
-#include "includes/PolygonalMWT.h"
+#include "GrahamScan.h"
+#include "PolygonalMWT.h"
 #include "load_coordinates.h"
-#include "GraphState.h"
-#include "includes/AdjListGraph.h"
-#include "includes/PointNodeHasher.h"
-#include "includes/FaceFinder.h"
+#include "AdjListGraph.h"
+#include "FaceFinder.h"
+#include "PointHash.h"
+#include "PointNodeHasher.h"
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <dataset_file>\n";
@@ -28,8 +28,8 @@ int main(int argc, char** argv) {
         pointPairs.emplace_back(c.x, c.y);
     }
 
-    // this is a map corresponding each coordinate/point to a node 'number'
-    std::unordered_map<Point, int, PointHash> pointHashMap = PointNodeHasher::mapCoordinates(pointPairs);
+  /*   // this is a map corresponding each coordinate/point to a node 'number'
+    std::unordered_map<Point, int, PointHash> pointHashMap = PointNodeHasher::mapCoordinates(pointPairs); */
     // create a complete graph first (adjacency list)
     AdjListGraph complete(pointPairs);
     
@@ -40,22 +40,29 @@ int main(int argc, char** argv) {
      * s2/ convert into our nodes & create adj list
      */
     PointPairType convexHullPoints = GrahamScan::findConvexHull(pointPairs);
+    std::cout << "CONVEX HULL POINTS: \n";
+    for (auto p : convexHullPoints) {
+        std::cout << "POINT (" << p.first << ", " << p.second << ")\n";
+    }
     std::vector<size_t> convexHullNodes(convexHullPoints.size());
     std::transform(convexHullPoints.begin(), convexHullPoints.end(), convexHullNodes.begin(),
     [&](const auto &p) { return complete.getNodeForPoint(p); });
     // find edges
     // todo replace this with a better way of finding the convex hull's weight
     double convexHullWeight = GrahamScan::findConvexWeight(convexHullPoints);
-
+    std::cout << "CONVEX HULL WEIGHT: " << convexHullWeight << "\n";
     // mst: kruskals from graph. we can assume every node is included lol :3 yaaay msts
     std::vector<std::vector<size_t>> mstEdges = complete.kruskalMST();
     double MSTWeight = complete.computeAdjListWeight(mstEdges);
+
+    std::cout << "MST WEIGHT: " << MSTWeight << "\n";
     // add edges of mst and hull tgt, and process into a graph (with adj list, points) (can remove weights here)
 
     std::vector<std::vector<size_t>> edgeSumList = complete.mergeAdjListAndConvex(mstEdges, convexHullNodes);
     // run facefinder algo (needs an input of all points + adj list)
-    std::vector<std::vector<size_t>> faceList = FaceFinder::find_faces(complete.getPoints(), edgeSumList);
-
+    auto list = complete.getPoints();
+    std::vector<std::vector<size_t>> faceList = FaceFinder::find_faces(list, edgeSumList);
+     std::cout << "NO. OF POLYGONS: " << list.size() << "\n";
     // for each face, run mwt polygonisation algo 
     /**
     need to remove the boundary per polygon and add in the convex weight + mst weight manually
@@ -65,7 +72,7 @@ int main(int argc, char** argv) {
         std::vector<Point> facePointList(v.size());
         std::transform(v.begin(), v.end(),facePointList.begin(),
         [&](const auto &p) { return complete.getPointForNode(p); });
-       currWeight += PolygonalMWT::mTC(facePointList, 0, facePointList.size() - 1);
+       currWeight += PolygonalMWT::mTC(facePointList, facePointList.size() - 1);
        // remove boundary after
        currWeight -= FaceFinder::computePointBoundaryWeight(facePointList);
     }

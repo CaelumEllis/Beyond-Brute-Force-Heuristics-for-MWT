@@ -17,6 +17,7 @@ namespace PointNodeHasher {
 			pointNodeTable[p] = nodes;
 			nodes++;
 		}
+		return pointNodeTable;
 	}
 }
 #endif
