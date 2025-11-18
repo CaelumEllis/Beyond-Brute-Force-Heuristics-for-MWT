@@ -25,68 +25,92 @@ double SimulatedAnnealing::computeWeight(const GraphState& gs) {
 //     return newLen2 - oldLen2;
 // }
 
-static double computeWeightChange(const GraphState& gs, const FlipResult& flip) {
-    // old diagonal exists in the current triangulation
+void SimulatedAnnealing::configureDynamic(const GraphState& gs, const std::vector<Edge>& candidates) {
+
+    // Estimate average |delta E| from sample flips
+    int sampleCount = std::min<int>(800, candidates.size());
+
+    double sum = 0;
+    int valid = 0;
+
+    for (int i = 0; i < sampleCount; i++) {
+        auto &e = candidates[i];
+        auto flip = FlipCriteria::isFlipLegal(gs, e.u, e.v);
+        if (!flip.legal) continue;
+
+        double delta = std::abs(computeWeightChange(gs, flip));
+        if (delta > 0) {
+            sum += delta;
+            valid++;
+        }
+    }
+
+    double Eavg = (valid > 0 ? sum / valid : 0.1);
+
+    // auto adjusted parameters based on average |ΔE|
+    initialTemperature = 2.5 * Eavg;
+    minTemperature     = Eavg / 1000.0;
+    // scales with point set
+    maxIterations      = gs.edges.size() * 300;
+
+    adaptiveCooling = true;
+}
+
+
+double SimulatedAnnealing::computeWeightChange(const GraphState& gs, const FlipResult& flip) {
+
     const Edge* oldEdge = gs.getEdge(flip.b, flip.d);
     if (!oldEdge) return 0.0;
 
     double oldLen = oldEdge->weight;
 
-    // compute new diagonal length (a,c) from coordinates (not from existing edges)
+    // compute new diagonal explicitly
     const auto& pA = gs.points[flip.a];
     const auto& pC = gs.points[flip.c];
 
-    double dx = pA.first  - pC.first;
+    double dx = pA.first - pC.first;
     double dy = pA.second - pC.second;
-    double newLen = std::sqrt(dx*dx + dy*dy);
+    double newLen = std::sqrt(dx * dx + dy * dy);
 
-    // log-ratio metric (good for SA scaling)
     return std::log(newLen / oldLen);
 }
 
-void SimulatedAnnealing::run(GraphState& gs) const {
 
+void SimulatedAnnealing::run(GraphState& gs)
+{
     auto candidates = CandidateEdgeFilter::buildCandidateSet(gs);
-    size_t candidateCount = candidates.size();
-    if (candidates.empty()) {
-        std::cerr << "No candidate edges available.\n";
-        return;
-    }
-
     std::mt19937 rng(std::random_device{}());
 
+    // reset for this run
+    totalAccepted = 0;
     double T = initialTemperature;
-    int iterations = 0;
 
-    while (T > minTemperature && iterations < maxIterations) {
+    for (int i = 0; i < maxIterations && T > minTemperature; i++) {
 
-        if (candidates.size() <= candidateCount / 3) {
+        if (candidates.size() < 0.5 * gs.edges.size())
             candidates = CandidateEdgeFilter::buildCandidateSet(gs);
-        }
 
         const Edge& e = candidates[rng() % candidates.size()];
         auto flip = FlipCriteria::isFlipLegal(gs, e.u, e.v);
+        if (!flip.legal) continue;
 
-        if (flip.legal) {
-            double delta = computeWeightChange(gs, flip);
+        double delta = computeWeightChange(gs, flip);
+        bool accept = (delta < 0) || (exp(-delta / T) > ((double)rng() / rng.max()));
 
-            bool accept = (delta < 0) ||(exp(-delta / T) > (double)rng() / rng.max());
-
-            if (accept) {
-                gs.FlipEdge(flip);
-
-                CandidateEdgeFilter::updateCandidatesAfterFlip(
-                    candidates, gs, flip
-                );
-            }
+        if (accept) {
+            totalAccepted++;
+            gs.FlipEdge(flip);
+            CandidateEdgeFilter::updateCandidatesAfterFlip(candidates, gs, flip);
         }
 
-        T *= coolingRate;
-        iterations++;
+        // dynamic cooling option
+        if (adaptiveCooling)
+            T *= (delta < 0 ? 0.99995 : 0.9993);
+        else
+            T *= coolingRate;
     }
-
-    std::cout << "Simulated Annealing Completed.\n";
 }
+
 
 // just used to prove that SA is working properly
 void SimulatedAnnealing::greedyImprove(GraphState& gs) {
@@ -109,15 +133,16 @@ void SimulatedAnnealing::greedyImprove(GraphState& gs) {
             if (!flip.legal) continue;
 
             double delta = computeWeightChange(gs, flip);
-
-            if (delta < 0) { // improvement!
+            // if the proposed flip is better, accept it
+            if (delta < 0) {
                 gs.FlipEdge(flip);
 
                 // Update candidate list incrementally after the flip
                 CandidateEdgeFilter::updateCandidatesAfterFlip(candidates, gs, flip);
 
                 improved = true;
-                break;  // restart search to always apply best-first improvements
+                // restart search to always apply best-first improvements
+                break;
             }
         }
     }
