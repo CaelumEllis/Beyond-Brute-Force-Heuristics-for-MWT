@@ -59,10 +59,13 @@ int main(int argc, char** argv) {
     // add edges of mst and hull tgt, and process into a graph (with adj list, points) (can remove weights here)
 
     std::vector<std::vector<size_t>> edgeSumList = complete.mergeAdjListAndConvex(mstEdges, convexHullNodes);
+    // the edge weight to add to the final is actually here rip
+    double totalWeight = complete.computeAdjListWeight(edgeSumList);
+    std::cout << "COMBINED WEIGHT : " << totalWeight << "\n";
     // run facefinder algo (needs an input of all points + adj list)
     auto list = complete.getPoints();
     std::vector<std::vector<size_t>> faceList = FaceFinder::find_faces(list, edgeSumList);
-     std::cout << "NO. OF POLYGONS: " << list.size() << "\n";
+     std::cout << "NO. OF POLYGONS: " << faceList.size() << "\n";
     // for each face, run mwt polygonisation algo 
     /**
     need to remove the boundary per polygon and add in the convex weight + mst weight manually
@@ -72,13 +75,18 @@ int main(int argc, char** argv) {
         std::vector<Point> facePointList(v.size());
         std::transform(v.begin(), v.end(),facePointList.begin(),
         [&](const auto &p) { return complete.getPointForNode(p); });
-       currWeight += PolygonalMWT::mTC(facePointList, facePointList.size() - 1);
-       // remove boundary after
-       currWeight -= FaceFinder::computePointBoundaryWeight(facePointList);
+       
+        auto totalDiag = PolygonalMWT::mTC(facePointList, facePointList.size());
+    
+        std::cout << "TOTAL DIAG: " << totalDiag << "\n";
+        auto boundaryWeight = FaceFinder::computePointBoundaryWeight(facePointList);
+        std::cout<< "WEIGHT OF BOUNDARY: " << boundaryWeight;
+        auto internalDiag = ((totalDiag - boundaryWeight) / 2);
+        std::cout << "INTERNAL DIAG: " << internalDiag << "\n";
+        currWeight += internalDiag;
     }
     
-    currWeight += convexHullWeight;
-    currWeight += MSTWeight;
+    currWeight += totalWeight;
 
     std::cout << "Final MWT approx by MST polygonisation is " << currWeight << std::endl;
     return 0;
@@ -89,6 +97,7 @@ int pairToNode(const std::pair<double,double>& pr, const AdjListGraph& graph) {
     Point p(pr.first, pr.second);
     return graph.getNodeForPoint(p);  // uses your hash table
 }
+
 
 
 /**
