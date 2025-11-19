@@ -98,11 +98,11 @@ generators = {
     "adv_noise": adversarial_with_noise,
 }
 
-print("\n📌 Generating dataset suite for Minimum Weight Triangulation benchmarking...\n")
+print("\n Generating dataset suite for Minimum Weight Triangulation benchmarking...\n")
 
 for size in sizes:
     for name, fn in generators.items():
         pts = fn(size)
         save_dataset(f"datasets/{name}", f"{name}_{size}", pts)
 
-print("\n🎉 All datasets generated successfully!\n")
+print("\n All datasets generated successfully!\n")
