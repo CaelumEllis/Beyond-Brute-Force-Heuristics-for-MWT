@@ -2,9 +2,6 @@
 // Created by Caelum Ellis on 17/11/2025.
 //
 
-//
-// Created by Caelum Ellis on 17/11/2025.
-//
 #ifndef EDGEKEY_H
 #define EDGEKEY_H
 

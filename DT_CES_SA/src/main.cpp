@@ -21,111 +21,106 @@ int main(int argc, char** argv) {
         return 1;
     }
     std::string filename = argv[1];
-    size_t iterations = 1;
-    if (argc == 3) {
-        iterations = std::stoi(argv[2]);
-    }
 
-    for (size_t i = 0; i < iterations; i++) {
-        // Load Points/vectos from file
-        auto coordinates = loadCoordinatesFromFile(filename);
-        std::vector<std::pair<double,double>> points;
-        points.reserve(coordinates.size());
-        for (auto &p : coordinates)
-            points.emplace_back(p.x, p.y);
+    // Load Points/vectos from file
+    auto coordinates = loadCoordinatesFromFile(filename);
+    std::vector<std::pair<double,double>> points;
+    points.reserve(coordinates.size());
+    for (auto &p : coordinates)
+        points.emplace_back(p.x, p.y);
 
-        // Delaunay Triangulation Time
-        auto t1_start = Clock::now();
-        auto dt = DelaunayWrapper::translateOutput(points);
-        GraphState gs(dt, points);
-        auto t1_end = Clock::now();
-        long long dtTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t1_end - t1_start).count();
+    // Delaunay Triangulation Time
+    auto t1_start = Clock::now();
+    auto dt = DelaunayWrapper::translateOutput(points);
+    GraphState gs(dt, points);
+    auto t1_end = Clock::now();
+    long long dtTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t1_end - t1_start).count();
 
 
 
-        // Candidate Edge List Build Time
-        auto t2_start = Clock::now();
-        auto candidateEdges = CandidateEdgeFilter::buildCandidateSet(gs);
-        auto t2_end = Clock::now();
-        long long candidateTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t2_end - t2_start).count();
+    // Candidate Edge List Build Time
+    auto t2_start = Clock::now();
+    auto candidateEdges = CandidateEdgeFilter::buildCandidateSet(gs);
+    auto t2_end = Clock::now();
+    long long candidateTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t2_end - t2_start).count();
 
-        // Simulated Annealing + Greedy Optimisation
-        SimulatedAnnealing sa;
+    // Simulated Annealing + Greedy Optimisation
+    SimulatedAnnealing sa;
 
-        // This function tunes the initial temperature and cooling rate
-        // based on the number of candidate edges available
-        sa.configureDynamic(gs, candidateEdges);
-        double initialWeight = sa.computeWeight(gs);
+    // This function tunes the initial temperature and cooling rate
+    // based on the number of candidate edges available
+    sa.configureDynamic(gs, candidateEdges);
+    double initialWeight = sa.computeWeight(gs);
 
-        auto t3_start = Clock::now();
-        // run simulated annealing then greedy optimisation
-        sa.run(gs);
-        sa.greedyImprove(gs);
+    auto t3_start = Clock::now();
+    // run simulated annealing then greedy optimisation
+    sa.run(gs);
+    sa.greedyImprove(gs);
 
-        auto t3_end = Clock::now();
+    auto t3_end = Clock::now();
 
-        long long saTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t3_end - t3_start).count();
+    long long saTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t3_end - t3_start).count();
 
-        // Test Metrics
-        double finalWeight = sa.computeWeight(gs);
-        double improvement = (initialWeight - finalWeight) / initialWeight * 100.0;
+    // Test Metrics
+    double finalWeight = sa.computeWeight(gs);
+    double improvement = (initialWeight - finalWeight) / initialWeight * 100.0;
 
-        /////////////////////////////////////////
-        // Summary Output
-        /////////////////////////////////////////
-        // std::cout << "\n===== Run Summary =====\n";
-        // std::cout << "File: " << filename << "\n";
-        // std::cout << "Points: " << gs.points.size() << "\n";
-        // std::cout << "Edges: " << gs.edges.size() << "\n\n";
-        //
-        // std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
-        // std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
-        // std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
-        //
-        // std::cout << "Initial Weight: " << initialWeight << "\n";
-        // std::cout << "Final Weight:   " << finalWeight << "\n";
-        // std::cout << "Improvement:    " << improvement << "%\n";
-        // std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
+    /////////////////////////////////////////
+    // Summary Output
+    /////////////////////////////////////////
+    // std::cout << "\n===== Run Summary =====\n";
+    // std::cout << "File: " << filename << "\n";
+    // std::cout << "Points: " << gs.points.size() << "\n";
+    // std::cout << "Edges: " << gs.edges.size() << "\n\n";
+    //
+    // std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
+    // std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
+    // std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
+    //
+    // std::cout << "Initial Weight: " << initialWeight << "\n";
+    // std::cout << "Final Weight:   " << finalWeight << "\n";
+    // std::cout << "Improvement:    " << improvement << "%\n";
+    // std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
 
-        ///////////////////////////////////////////
-        // Export final triangulation for plotting
-        ///////////////////////////////////////////
-        // std::string outPlotFile = filename + "_generated_triangulation.csv";
-        // std::ofstream plotOut(outPlotFile);
-        //
-        // plotOut << "x,y\n";
-        // for (const auto& p : gs.points)
-        //     plotOut << p.first << "," << p.second << "\n";
-        //
-        // plotOut << "\n#EDGES u,v\n";
-        // for (const auto& e : gs.edges)
-        //     plotOut << e.u << "," << e.v << "\n";
-        //
-        // plotOut.close();
-        //
-        // std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
+    ///////////////////////////////////////////
+    // Export final triangulation for plotting
+    ///////////////////////////////////////////
+    // std::string outPlotFile = filename + "_generated_triangulation.csv";
+    // std::ofstream plotOut(outPlotFile);
+    //
+    // plotOut << "x,y\n";
+    // for (const auto& p : gs.points)
+    //     plotOut << p.first << "," << p.second << "\n";
+    //
+    // plotOut << "\n#EDGES u,v\n";
+    // for (const auto& e : gs.edges)
+    //     plotOut << e.u << "," << e.v << "\n";
+    //
+    // plotOut.close();
+    //
+    // std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
 
-        /////////////////////////////////////////
-        // Output for CSV Data Collection
-        /////////////////////////////////////////
+    /////////////////////////////////////////
+    // Output for CSV Data Collection
+    /////////////////////////////////////////
 
-        // extra derived metrics
+    // extra derived metrics
 
-        std::cout << "RESULT,"
-        << filename << ","
-        << gs.points.size() << ","     // number of points
-        << gs.edges.size() << ","      // edge count
-        << dtTimeMs << ","             // time for initial Delaunay
-        << candidateTimeMs << ","      // candidate filter time
-        << saTimeMs << ","             // simulated annealing time
-        << initialWeight << ","        // weight before optimisation
-        << finalWeight << ","          // weight after optimisation
-        << improvement << ","          // improvement percentage
-        << sa.totalAccepted            // number of accepted flips
-        << "\n";
+   // std::cout << "RESULT,"
+   // << filename << ","
+   // << gs.points.size() << ","     // number of points
+   //<< gs.edges.size() << ","      // edge count
+   // << dtTimeMs << ","             // time for initial Delaunay
+   // << candidateTimeMs << ","      // candidate filter time
+   // << saTimeMs << ","             // simulated annealing time
+   // << initialWeight << ","        // weight before optimisation
+   // << finalWeight << ","          // weight after optimisation
+   // << improvement << ","          // improvement percentage
+   // << sa.totalAccepted            // number of accepted flips
+    //<< "\n";
+    std::cout << "RESULT," << finalWeight << "," << saTimeMs << "\n";
 
 
-    }
     return 0;
 }
 

@@ -1,4 +1,4 @@
-# Install script for directory: /Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/MST_Polygonisation
+# Install script for directory: /Users/caelum/Developer/UNSW/COMP3821GroupProject25T3/main/COMP3821GroupProject25T3/MST_Polygonisation
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,7 +40,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/MST_Polygonisation/build/install_local_manifest.txt"
+  file(WRITE "/Users/caelum/Developer/UNSW/COMP3821GroupProject25T3/main/COMP3821GroupProject25T3/MST_Polygonisation/build/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -56,6 +56,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/bhu/Documents/University Files/Year 2/COMP3821/COMP3821GroupProject25T3/MST_Polygonisation/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/Users/caelum/Developer/UNSW/COMP3821GroupProject25T3/main/COMP3821GroupProject25T3/MST_Polygonisation/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
