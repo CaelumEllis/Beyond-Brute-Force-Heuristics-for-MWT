@@ -1,5 +1,5 @@
 
-#include "hull.hpp"
+#include "hull.h"
 #include <algorithm>
 
 static bool cmpXY(const Point &a, const Point &b) {

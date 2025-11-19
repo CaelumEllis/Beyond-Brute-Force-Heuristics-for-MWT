@@ -1,12 +1,16 @@
 
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#ifndef GEOMETRY_H
+#define GEOMETRY_H
 
 #include <vector>
 #include <cmath>
 
-struct Point {
+class Point {
+        public:
     double x, y;
+
+
+    Point(double x_, double y_) : x{x_}, y{y_} {};
 };
 
 struct Triangle {

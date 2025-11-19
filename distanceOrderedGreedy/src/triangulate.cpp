@@ -1,5 +1,5 @@
 
-#include "triangulate.hpp"
+#include "triangulate.h"
 #include <algorithm>
 
 static void addEdge(std::vector<Edge> &edges, int a, int b) {

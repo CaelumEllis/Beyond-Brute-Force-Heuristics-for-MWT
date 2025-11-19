@@ -1,9 +1,9 @@
 
-#ifndef HULL_HPP
-#define HULL_HPP
+#ifndef HULL_H
+#define HULL_H
 
 #include <vector>
-#include "geometry.hpp"
+#include "geometry.h"
 
 std::vector<int> convexHullIndices(const std::vector<Point> &P);
 

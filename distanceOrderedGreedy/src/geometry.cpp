@@ -1,5 +1,5 @@
 
-#include "geometry.hpp"
+#include "geometry.h"
 
 double edgeLength(const Point &A, const Point &B) {
     double dx = A.x - B.x;
