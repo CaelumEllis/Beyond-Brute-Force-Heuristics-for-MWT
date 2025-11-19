@@ -29,11 +29,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     # Linux-only sanitizer support
     if (UNIX AND NOT APPLE)
-        message(STATUS "✔ AddressSanitizer enabled")
+        message(STATUS "AddressSanitizer enabled")
         target_compile_options(DT_CES_SA PRIVATE -fsanitize=address -g -Og)
         target_link_options(DT_CES_SA PRIVATE -fsanitize=address)
     else()
-        message(WARNING "⚠ AddressSanitizer disabled (macOS does not support linking -lasan).")
+        message(WARNING "AddressSanitizer disabled (macOS does not support linking -lasan).")
         target_compile_options(DT_CES_SA PRIVATE -g -Og)
     endif()
 
