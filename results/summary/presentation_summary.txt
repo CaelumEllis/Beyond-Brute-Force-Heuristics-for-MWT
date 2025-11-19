@@ -23,30 +23,30 @@ Each error was calculated as: (w - w_lowerbound) / w_lowerbound (essentially a r
 
 Dataset       | DT_CES_SA    | MST_Polygonisation | distanceOrderedGreedy |
 ----------------------------------------------------------------------------
-| convex_25   | LowerBound   | 82.26%             | 50.74%                |
-| convex_50   | LowerBound   | 75.86%             | 108.05%               |
-| convex_200  | 8%           | LowerBound         | 498.50%               |
-| convex_500  | LowerBound   | 2.99%              | 1063.65%              |
-| convex_1000 | LowerBound   | 260.01%            | 1961.94%              |
+convex_25.    | LowerBound   | 82.26%             | 50.74%                |
+convex_50     | LowerBound   | 75.86%             | 108.05%               |
+convex_200    | 8%           | LowerBound         | 498.50%               |
+convex_500    | LowerBound   | 2.99%              | 1063.65%              |
+convex_1000.  | LowerBound   | 260.01%            | 1961.94%              |
 ----------------------------------------------------------------------------
-| average     | 8%           | 105%               | 736.576%              |
+  average     | 8%           | 105%               | 736.576%              |
 
 Dataset       | DT_CES_SA    | MST_Polygonisation | distanceOrderedGreedy |
 ---------------------------------------------------------------------------
-| fractal_25  | 2.11%        | LowerBound         | 48.15%                |
-| fractal_50  | LowerBound   | 28.64%             | 83.19%                |
-| fractal_200 | 19.00%       | LowerBound         | 131.31%               |
-| fractal_500 | 47.42%       | LowerBound         | 333.25%               |
-| fractal_1000| LowerBound   | 85.29%             | 243.08%               |
+fractal_25    | 2.11%        | LowerBound         | 48.15%                |
+fractal_50    | LowerBound   | 28.64%             | 83.19%                |
+fractal_200.  | 19.00%       | LowerBound         | 131.31%               |
+fractal_500.  | 47.42%       | LowerBound         | 333.25%               |
+fractal_1000. | LowerBound   | 85.29%             | 243.08%               |
 ----------------------------------------------------------------------------
-| average     | 22.84%       | 28.64%             | 167.80%               |
+average       | 22.84%       | 28.64%             | 167.80%               |
 
 Dataset       | DT_CES_SA    | MST_Polygonisation | distanceOrderedGreedy |
 ---------------------------------------------------------------------------
-| spiral_25   | LowerBound   | 26.44%             | 28.88%                |
-| spiral_50   | 5.79%        | LowerBound         | 76.41%                |
-| spiral_200  | LowerBound   | 2.57%              | 134.15%               |
-| spiral_500  | LowerBound   | 107.03%            | 224.94%               |
-| spiral_1000 | LowerBound   | 34.06%             | 342.53%               |
+spiral_25.    | LowerBound   | 26.44%             | 28.88%                |
+spiral_50     | 5.79%        | LowerBound         | 76.41%                |
+spiral_200    | LowerBound   | 2.57%              | 134.15%               |
+spiral_500    | LowerBound   | 107.03%            | 224.94%               |
+spiral_1000   | LowerBound   | 34.06%             | 342.53%               |
 ----------------------------------------------------------------------------
-| average     | 5.79%        | 41.78%             | 161.39%               |
+average       | 5.79%        | 41.78%             | 161.39%               |
