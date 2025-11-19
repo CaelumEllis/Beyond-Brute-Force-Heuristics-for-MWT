@@ -1,0 +1,109 @@
+===== GLOBAL PERFORMANCE SUMMARY =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+ALL_DATASETS,120,2.095,2.097,12.3,1.475,4083
+
+
+===== CATEGORY SUMMARY: adv_noise =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+adv_noise,15,2.8,0.75,4.704,2.667,4157
+
+-- Size breakdown for adv_noise --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+adv_noise,50,3,3.387,1.309,4.704,3.372,116
+adv_noise,200,3,3.332,0.589,3.788,3.541,472
+adv_noise,500,3,2.336,0.307,2.683,2.223,1362
+adv_noise,1000,3,2.707,0.124,2.83,2.71,2884
+adv_noise,3000,3,2.239,0.12,2.376,2.182,15952
+
+
+===== CATEGORY SUMMARY: adversarial =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+adversarial,15,6.741,2.364,12.3,6.057,4247
+
+-- Size breakdown for adversarial --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+adversarial,50,3,10.329,3.394,12.3,12.277,98
+adversarial,200,3,6.687,0.635,7.326,6.677,492
+adversarial,500,3,6.024,0.788,6.92,5.709,1433
+adversarial,1000,3,5.112,0.223,5.311,5.153,3205
+adversarial,3000,3,5.553,0.577,6.192,5.397,16009
+
+
+===== CATEGORY SUMMARY: annulus =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+annulus,15,1.387,0.422,2.009,1.504,4054
+
+-- Size breakdown for annulus --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+annulus,50,3,1.326,0.537,1.685,1.585,79
+annulus,200,3,0.917,0.141,1.021,0.973,404
+annulus,500,3,1.655,0.204,1.887,1.574,1274
+annulus,1000,3,1.165,0.065,1.239,1.139,3088
+annulus,3000,3,1.87,0.152,2.009,1.894,15425
+
+
+===== CATEGORY SUMMARY: circle =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+circle,15,1.823,0.289,2.549,1.802,4215
+
+-- Size breakdown for circle --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+circle,50,3,1.869,0.65,2.549,1.802,86
+circle,200,3,1.977,0.213,2.22,1.889,434
+circle,500,3,1.747,0.228,1.926,1.825,1257
+circle,1000,3,1.793,0.025,1.82,1.787,3002
+circle,3000,3,1.729,0.026,1.759,1.718,16297
+
+
+===== CATEGORY SUMMARY: clusters =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+clusters,15,1.566,0.742,3.42,1.398,4056
+
+-- Size breakdown for clusters --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+clusters,50,3,2.49,1.302,3.42,3.047,82
+clusters,200,3,1.064,0.543,1.675,0.877,437
+clusters,500,3,1.373,0.289,1.653,1.392,1297
+clusters,1000,3,1.501,0.1,1.582,1.531,3151
+clusters,3000,3,1.402,0.079,1.483,1.398,15311
+
+
+===== CATEGORY SUMMARY: grid =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+grid,15,0.39,0.189,0.615,0.383,4113
+
+-- Size breakdown for grid --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+grid,50,3,0.615,0.0,0.615,0.615,179
+grid,200,3,0.119,0.079,0.169,0.161,772
+grid,500,3,0.519,0.084,0.611,0.502,1832
+grid,1000,3,0.397,0.065,0.468,0.383,4069
+grid,3000,3,0.297,0.087,0.369,0.321,13712
+
+
+===== CATEGORY SUMMARY: poisson =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+poisson,15,0.912,0.375,1.371,0.968,3911
+
+-- Size breakdown for poisson --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+poisson,50,3,0.536,0.237,0.806,0.437,87
+poisson,200,3,0.484,0.049,0.542,0.456,402
+poisson,500,3,0.978,0.036,1.018,0.968,1221
+poisson,1000,3,1.219,0.104,1.326,1.213,3038
+poisson,3000,3,1.343,0.025,1.371,1.332,14805
+
+
+===== CATEGORY SUMMARY: uniform =====
+category,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+uniform,15,1.14,0.24,1.523,1.12,3918
+
+-- Size breakdown for uniform --
+category,size,runs,mean_improvement_pct,std_improvement_pct,best_run_pct,median_pct,avg_sa_time_ms
+uniform,50,3,1.034,0.08,1.125,1.004,83
+uniform,200,3,0.864,0.262,1.049,0.979,423
+uniform,500,3,1.083,0.037,1.12,1.081,1240
+uniform,1000,3,1.478,0.041,1.523,1.467,2954
+uniform,3000,3,1.241,0.066,1.314,1.223,14888
+
+

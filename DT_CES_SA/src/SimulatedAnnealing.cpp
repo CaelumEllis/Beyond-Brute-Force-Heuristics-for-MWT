@@ -81,13 +81,14 @@ void SimulatedAnnealing::run(GraphState& gs)
     auto candidates = CandidateEdgeFilter::buildCandidateSet(gs);
     std::mt19937 rng(std::random_device{}());
 
-    // reset for this run
     totalAccepted = 0;
     double T = initialTemperature;
 
+    int noImprovementStreak = 0;
+
     for (int i = 0; i < maxIterations && T > minTemperature; i++) {
 
-        if (candidates.size() < 0.5 * gs.edges.size())
+        if (candidates.size() < 0.3 * gs.edges.size())
             candidates = CandidateEdgeFilter::buildCandidateSet(gs);
 
         const Edge& e = candidates[rng() % candidates.size()];
@@ -101,15 +102,27 @@ void SimulatedAnnealing::run(GraphState& gs)
             totalAccepted++;
             gs.FlipEdge(flip);
             CandidateEdgeFilter::updateCandidatesAfterFlip(candidates, gs, flip);
+
+            // Reset streak only if this was an improving flip
+            if (delta < 0)
+                noImprovementStreak = 0;
+            else
+                noImprovementStreak++;
+        }
+        else {
+            noImprovementStreak++;  // nothing happened, worsening or rejected
         }
 
-        // dynamic cooling option
-        if (adaptiveCooling)
-            T *= (delta < 0 ? 0.99995 : 0.9993);
-        else
-            T *= coolingRate;
+        // Stagnation exit check
+        if ((size_t)noImprovementStreak > gs.edges.size() * 3) {
+            // std::cout << "[SA] Early stop due to stagnation after " << i << " iterations\n";
+            break;
+        }
+        // Cooling logic (adaptive or fixed)
+        T *= (adaptiveCooling ? (delta < 0 ? 0.9999 : 0.9993) : coolingRate);
     }
 }
+
 
 
 // just used to prove that SA is working properly
