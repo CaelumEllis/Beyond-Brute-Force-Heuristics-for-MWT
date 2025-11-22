@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
 
     // Delaunay Triangulation Time
     auto t1_start = Clock::now();
+
     auto dt = DelaunayWrapper::translateOutput(points);
     GraphState gs(dt, points);
     auto t1_end = Clock::now();
@@ -47,8 +48,10 @@ int main(int argc, char** argv) {
 
     // This function tunes the initial temperature and cooling rate
     // based on the number of candidate edges available
+
     sa.configureDynamic(gs, candidateEdges);
     double initialWeight = sa.computeWeight(gs);
+
 
     auto t3_start = Clock::now();
     // run simulated annealing then greedy optimisation
@@ -63,9 +66,12 @@ int main(int argc, char** argv) {
     double finalWeight = sa.computeWeight(gs);
     double improvement = (initialWeight - finalWeight) / initialWeight * 100.0;
 
-    // ////////////////////////////////////////////
-    // // Export POINTS + DT edges + SA edges
-    // ////////////////////////////////////////////
+    std::cout << "RESULT," << finalWeight << "\n";
+// un comment to here
+//
+//     // ////////////////////////////////////////////
+//     // // Export POINTS + DT edges + SA edges
+//     // ////////////////////////////////////////////
     //
     // std::string outPlotFile = "triangulations_output.csv";
     // std::ofstream plotOut(outPlotFile);
@@ -100,19 +106,19 @@ int main(int argc, char** argv) {
     ///////////////////////////////////////
     // Summary Output
     ///////////////////////////////////////
-     std::cout << "\n===== Run Summary =====\n";
-     std::cout << "File: " << filename << "\n";
-     std::cout << "Points: " << gs.points.size() << "\n";
-     std::cout << "Edges: " << gs.edges.size() << "\n\n";
-
-     std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
-     std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
-     std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
-
-     std::cout << "Initial Weight: " << initialWeight << "\n";
-     std::cout << "Final Weight:   " << finalWeight << "\n";
-     std::cout << "Improvement:    " << improvement << "%\n";
-     std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
+     // std::cout << "\n===== Run Summary =====\n";
+     // std::cout << "File: " << filename << "\n";
+     // std::cout << "Points: " << gs.points.size() << "\n";
+     // std::cout << "Edges: " << gs.edges.size() << "\n\n";
+     //
+     // std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
+     // std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
+     // std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
+     //
+     // std::cout << "Initial Weight: " << initialWeight << "\n";
+     // std::cout << "Final Weight:   " << finalWeight << "\n";
+     // std::cout << "Improvement:    " << improvement << "%\n";
+     // std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
 
     ///////////////////////////////////////////
     // Export final triangulation for plotting

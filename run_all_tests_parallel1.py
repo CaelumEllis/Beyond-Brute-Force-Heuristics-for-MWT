@@ -7,17 +7,44 @@ import math
 from datetime import datetime
 import uuid
 
-# CLI Arguments
+
+# Helper: Extract dataset size from filename
+def extract_dataset_size(filename: str) -> int:
+    """
+    Extracts numeric size from filenames such as:
+    - convex_200.pnt
+    - Ci_10K_D.pnt
+    - EM_46625_F.pnt
+    - uniform_5k_noise.txt
+
+    Returns -1 if no numeric inference is possible.
+    """
+
+    # Detect 10K, 5k, 100K style names
+    match_k = re.search(r"(\d+)\s*([kK])", filename)
+    if match_k:
+        return int(match_k.group(1)) * 1000
+
+    # Otherwise detect final standalone integer (covers 46625, 500, etc.)
+    match_num = re.findall(r"(\d+)", filename)
+    if match_num:
+        return int(match_num[-1])
+
+    return -1
+
+
+# CLI arguments
 parser = argparse.ArgumentParser(description="Parallel-safe benchmarking runner.")
 parser.add_argument("--exec", required=True, help="Path to compiled executable")
-parser.add_argument("--datasets", default="final_test_datasets", help="Folder of .txt datasets")
+parser.add_argument("--datasets", default="final_test_datasets", help="Folder containing datasets")
 parser.add_argument("--runs", "-r", type=int, default=1, help="Repeats per dataset")
-parser.add_argument("--tag", default="", help="Optional tag to distinguish files")
-parser.add_argument("--output_dir", default="results/raw", help="Where to store result CSVs")
+parser.add_argument("--tag", default="", help="Optional label suffix for output file")
+parser.add_argument("--output_dir", default="results/raw", help="Where to store generated CSV files")
 
 args = parser.parse_args()
 
-# Resolve paths
+
+# Resolve environment paths
 ROOT = os.getcwd()
 EXEC = os.path.abspath(os.path.join(ROOT, args.exec))
 DATASET_DIR = os.path.abspath(os.path.join(ROOT, args.datasets))
@@ -26,38 +53,38 @@ OUTPUT_DIR = os.path.abspath(os.path.join(ROOT, args.output_dir))
 RUNS = args.runs
 ALGO_NAME = os.path.basename(EXEC)
 
-# Build unique filename
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 unique_id = uuid.uuid4().hex[:6]
 TAG = f"_{args.tag}" if args.tag else ""
 
-OUTPUT_PATH = os.path.join(
-    OUTPUT_DIR, f"{ALGO_NAME}{TAG}_{timestamp}_{unique_id}.csv"
-)
-
+OUTPUT_PATH = os.path.join(OUTPUT_DIR, f"{ALGO_NAME}{TAG}_{timestamp}_{unique_id}.csv")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Collect dataset files
+
+# Collect dataset files (.txt and .pnt)
 datasets = sorted([
     os.path.join(root, f)
     for root, _, files in os.walk(DATASET_DIR)
-    for f in files if f.endswith(".txt")
-])
+    for f in files if f.lower().strip().endswith((".txt", ".pnt"))
+], key=lambda x: os.path.basename(x).lower())
 
 if not datasets:
     print(f"No datasets found in {DATASET_DIR}")
     exit(1)
 
-# Create CSV with header
+
+# Create CSV header
 with open(OUTPUT_PATH, "w") as f:
     f.write("dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs\n")
 
-print("\n Parallel Runner Started")
+
+# Main Execution Loop
+print("\nBenchmarking Started")
 print(f"Algorithm: {ALGO_NAME}")
 print(f"Runs per dataset: {RUNS}")
 print(f"Output file: {OUTPUT_PATH}\n")
 
-# Main loop
+
 for dataset in datasets:
     name = os.path.basename(dataset)
     print(f"→ {name}")
@@ -79,19 +106,17 @@ for dataset in datasets:
                 parsed = line.replace("RESULT,", "").strip()
 
         if parsed is None:
-            print(f" Run {i+1}/{RUNS}: No RESULT line")
+            print(f" Run {i+1}/{RUNS}: No RESULT line found")
             continue
 
         try:
             weight = float(parsed.split(",")[0])
             weights.append(weight)
-        except:
-            print(f" Run {i+1}/{RUNS}: Parse failed: '{parsed}'")
-            continue
+        except ValueError:
+            print(f" Run {i+1}/{RUNS}: Failed to parse RESULT: '{parsed}'")
 
-    # Dataset Completed — Write Result
-    size_match = re.search(r"_(\d+)\.txt$", name)
-    size = int(size_match.group(1)) if size_match else -1
+    # Result aggregation and CSV write
+    size = extract_dataset_size(name)
 
     if not weights:
         row = f"{name},{size},{ALGO_NAME},NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,{RUNS}\n"
@@ -106,11 +131,12 @@ for dataset in datasets:
         else:
             stddev_val = 0.0
 
-        avg_runtime = total_runtime / len(weights) if weights else 0
-        row = f"{name},{size},{ALGO_NAME},{mean},{stddev},{mn},{mx},{round(avg_runtime,3)},{len(weights)}\n"
+        avg_runtime = total_runtime / len(weights)
+        row = f"{name},{size},{ALGO_NAME},{mean_val},{stddev_val},{mn},{mx},{round(avg_runtime,3)},{len(weights)},{RUNS}\n"
 
     with open(OUTPUT_PATH, "a") as f:
         f.write(row)
 
-print("\n Finished.")
-print(f" Results saved in: {OUTPUT_PATH}\n")
+# Done
+print("\nBenchmarking Complete.")
+print(f"Results saved to: {OUTPUT_PATH}\n")
