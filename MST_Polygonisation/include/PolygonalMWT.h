@@ -9,6 +9,7 @@ using namespace std;
 
 /**
  * Original DP MWT calculation, with splits added (vector version)
+ * Adapted from geeks4geeks
  */
 
 namespace PolygonalMWT {
@@ -22,48 +23,49 @@ double dist(Point p1, Point p2)
 
 // A utility function to find cost of a triangle. The cost is considered
 // as perimeter (sum of lengths of all edges) of the triangle
-double cost(vector<Point> points, int i, int j, int k)
+double cost(vector<Point> points, size_t i, size_t j, size_t k)
 {
     Point p1 = points[i], p2 = points[j], p3 = points[k];
     return dist(p1, p2) + dist(p2, p3) + dist(p3, p1);
 }
 
-// A Dynamic programming based function to find minimum cost for convex
-// polygon triangulation.
-double mTC(vector<Point> points, int n)
+double mTC(vector<Point> points, size_t n)
 {
-   // There must be at least 3 points to form a triangle
    if (n < 3)
       return 0;
-       std::cout << "n = " << n << "\n";
-   // table to store results of subproblems.  table[i][j] stores cost of
-   // triangulation of points from i to j.  The entry table[0][n-1] stores
-   // the final result.
+   
+   // dp table
    double table[n][n];
+   // edges
+   size_t split[n][n];
 
-   // Fill table using above recursive formula. Note that the table
-   // is filled in diagonal fashion i.e., from diagonal elements to
-   // table[0][n-1] which is the result.
-   for (int gap = 0; gap < n; gap++)
+   for (size_t gap = 0; gap < n; gap++)
    {
-      for (int i = 0, j = gap; j < n; i++, j++)
+      for (size_t i = 0, j = gap; j < n; i++, j++)
       {
-          if (j < i+2)
-             table[i][j] = 0.0;
-          else
-          {
+          if (j < i+2) {
+              table[i][j] = 0.0;
+              split[i][j] = 0; 
+          } else {
               table[i][j] = numeric_limits<double>::max();
-              for (int k = i+1; k < j; k++)
+              split[i][j] = 0;
+              
+              for (size_t k = i+1; k < j; k++)
               {
-                double val = table[i][k] + table[k][j] + cost(points,i,j,k);
-                if (table[i][j] > val)
-                     table[i][j] = val;
+                  double val = table[i][k] + table[k][j] + cost(points,i,j,k);
+                  if (table[i][j] > val) {
+                      table[i][j] = val;
+                      split[i][j] = k; 
+                  }
               }
           }
       }
    }
-   return  table[0][n-1];
+ 
+   
+   return table[0][n-1];
 }
+
 
 } // namespace PolygonalMWT
 

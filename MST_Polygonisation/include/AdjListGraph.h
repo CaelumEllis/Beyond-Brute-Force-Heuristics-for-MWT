@@ -7,6 +7,7 @@ using namespace std;
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <cassert>
 class AdjListGraph {
 	using PointPairType = std::vector<std::pair<double, double>>;
 	// Disjoint set data struture
@@ -154,27 +155,70 @@ class AdjListGraph {
  */
 std::vector<std::vector<size_t>> mergeAdjListAndConvex(
     const std::vector<std::vector<size_t>>& adj,
-    const std::vector<size_t> hullNodes) const
+    const std::vector<size_t>& hullNodes) const
 {
-	// bigger one will be our complete graph mst's adj list.
-    size_t n = adj.size();
-
     std::vector<std::vector<size_t>> merged = adj;
-	 for (size_t i = 0; i < n; ++i) {
-		// there is an edge from u->v and v->u we need to add.
-        size_t u = hullNodes[i];
-        size_t v = hullNodes[(i + 1) % n]; // wrap around to close the hull
+    merged.resize(adj.size()); // ensure enough space
 
-        // Add edge u-v if not already present
+    for (size_t i = 0; i < hullNodes.size(); ++i) {
+        size_t u = hullNodes[i];
+        size_t v = hullNodes[(i + 1) % hullNodes.size()];
+
+        assert(u < merged.size() && v < merged.size()); // debug
+
         if (std::find(merged[u].begin(), merged[u].end(), v) == merged[u].end())
-        	merged.at(u).push_back(v);
+            merged[u].push_back(v);
 
         if (std::find(merged[v].begin(), merged[v].end(), u) == merged[v].end())
-        	merged.at(v).push_back(u);
+            merged[v].push_back(u);
     }
 
     return merged;
 }
+
+/**
+joins deg 1 mst points to the convex hull
+ */
+
+
+ void fixTUC(std::vector<std::vector<size_t>>& adj, const std::vector<size_t> &hullNodes) {
+	std::vector<size_t> leaves;
+		auto N = adj.size();
+    leaves.reserve(N);
+		// leaf finder
+    for (size_t v = 0; v < N; ++v) {
+        if (adj[v].size() == 1) {     
+            leaves.push_back(v);
+        }
+    }
+
+		// finds nearest hull pt
+    for (size_t leaf : leaves) {
+
+        double bestDist = std::numeric_limits<double>::max();
+        size_t bestHull = std::numeric_limits<size_t>::max();
+
+        const auto& p = pointList_.at(leaf);
+
+        for (size_t h : hullNodes) {
+            const auto& q = pointList_.at(h);
+						// distsquared is computationally cheaper
+            double dist2 = Point::distSq(p, q);
+
+            if (dist2 < bestDist) {
+                bestDist = dist2;
+                bestHull = h;
+            }
+        }
+
+        // add
+        if (bestHull != std::numeric_limits<size_t>::max() && bestHull != leaf) {
+            adj[leaf].push_back(bestHull);
+            adj[bestHull].push_back(leaf);
+						std::cout << "added extra edge " << leaf << " - " << bestHull << "\n";
+        }
+    }
+ }
 
 double computeAdjListWeight(
     const std::vector<std::vector<size_t>>& mstAdj
