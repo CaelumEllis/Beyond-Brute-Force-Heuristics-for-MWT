@@ -7,9 +7,7 @@ import math
 from datetime import datetime
 import uuid
 
-# ---------------------------
 # CLI Arguments
-# ---------------------------
 parser = argparse.ArgumentParser(description="Parallel-safe benchmarking runner.")
 parser.add_argument("--exec", required=True, help="Path to compiled executable")
 parser.add_argument("--datasets", default="final_test_datasets", help="Folder of .txt datasets")
@@ -19,9 +17,7 @@ parser.add_argument("--output_dir", default="results/raw", help="Where to store 
 
 args = parser.parse_args()
 
-# ---------------------------
 # Resolve paths
-# ---------------------------
 ROOT = os.getcwd()
 EXEC = os.path.abspath(os.path.join(ROOT, args.exec))
 DATASET_DIR = os.path.abspath(os.path.join(ROOT, args.datasets))
@@ -41,9 +37,7 @@ OUTPUT_PATH = os.path.join(
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ---------------------------
 # Collect dataset files
-# ---------------------------
 datasets = sorted([
     os.path.join(root, f)
     for root, _, files in os.walk(DATASET_DIR)
@@ -51,23 +45,19 @@ datasets = sorted([
 ])
 
 if not datasets:
-    print(f"❌ No datasets found in {DATASET_DIR}")
+    print(f"No datasets found in {DATASET_DIR}")
     exit(1)
 
-# ---------------------------
 # Create CSV with header
-# ---------------------------
 with open(OUTPUT_PATH, "w") as f:
     f.write("dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs\n")
 
-print("\n🚀 Parallel Runner Started")
+print("\n Parallel Runner Started")
 print(f"Algorithm: {ALGO_NAME}")
 print(f"Runs per dataset: {RUNS}")
 print(f"Output file: {OUTPUT_PATH}\n")
 
-# ---------------------------
 # Main loop
-# ---------------------------
 for dataset in datasets:
     name = os.path.basename(dataset)
     print(f"→ {name}")
@@ -89,19 +79,17 @@ for dataset in datasets:
                 parsed = line.replace("RESULT,", "").strip()
 
         if parsed is None:
-            print(f"   ⚠️  Run {i+1}/{RUNS}: ❌ No RESULT line")
+            print(f" Run {i+1}/{RUNS}: No RESULT line")
             continue
 
         try:
             weight = float(parsed.split(",")[0])
             weights.append(weight)
         except:
-            print(f"   ⚠️  Run {i+1}/{RUNS}: ❌ Parse failed: '{parsed}'")
+            print(f" Run {i+1}/{RUNS}: Parse failed: '{parsed}'")
             continue
 
-    # ---------------------------
     # Dataset Completed — Write Result
-    # ---------------------------
     size_match = re.search(r"_(\d+)\.txt$", name)
     size = int(size_match.group(1)) if size_match else -1
 
@@ -118,10 +106,11 @@ for dataset in datasets:
         else:
             stddev_val = 0.0
 
-        row = f"{name},{size},{ALGO_NAME},{mean_val},{stddev_val},{mn},{mx},{round(total_runtime,3)},{len(weights)},{RUNS}\n"
+        avg_runtime = total_runtime / len(weights) if weights else 0
+        row = f"{name},{size},{ALGO_NAME},{mean},{stddev},{mn},{mx},{round(avg_runtime,3)},{len(weights)}\n"
 
     with open(OUTPUT_PATH, "a") as f:
         f.write(row)
 
-print("\n✅ Finished.")
-print(f"📄 Results saved in: {OUTPUT_PATH}\n")
+print("\n Finished.")
+print(f" Results saved in: {OUTPUT_PATH}\n")

@@ -3,9 +3,7 @@ import os
 from math import sqrt, pi, cos, sin
 import random
 
-# ----------------------------------
 # Utility: Write dataset in your format
-# ----------------------------------
 def save_dataset(folder, name, points):
     os.makedirs(folder, exist_ok=True)
     path = os.path.join(folder, f"{name}.txt")
@@ -15,11 +13,7 @@ def save_dataset(folder, name, points):
             f.write(f"{x:.6f} {y:.6f}\n")
     print(f"✔ Saved: {path}")
 
-
-# ----------------------------------
 # Dataset Generators
-# ----------------------------------
-
 def uniform(n):
     return np.random.rand(n, 2) * 100
 
@@ -81,10 +75,7 @@ def poisson_disk(n, radius=5):
     return np.array(pts)
 
 
-# ----------------------------------
 # Main generation loop
-# ----------------------------------
-
 sizes = [50, 200, 500, 1000, 3000]
 
 generators = {

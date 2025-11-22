@@ -101,7 +101,9 @@ for dataset in datasets:
     size = int(size_match.group(1)) if size_match else -1
 
     # Write row
-    row = f"{name},{size},{ALGO_NAME},{mean},{stddev},{mn},{mx},{round(total_runtime,3)},{len(weights)}\n"
+    avg_runtime = total_runtime / len(weights) if weights else 0
+    row = f"{name},{size},{ALGO_NAME},{mean},{stddev},{mn},{mx},{round(avg_runtime,3)},{len(weights)}\n"
+
     with open(OUTPUT_PATH, "a") as f:
         f.write(row)
 
