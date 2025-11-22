@@ -36,8 +36,6 @@ int main(int argc, char** argv) {
     auto t1_end = Clock::now();
     long long dtTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(t1_end - t1_start).count();
 
-
-
     // Candidate Edge List Build Time
     auto t2_start = Clock::now();
     auto candidateEdges = CandidateEdgeFilter::buildCandidateSet(gs);
@@ -65,22 +63,56 @@ int main(int argc, char** argv) {
     double finalWeight = sa.computeWeight(gs);
     double improvement = (initialWeight - finalWeight) / initialWeight * 100.0;
 
-    /////////////////////////////////////////
+    // ////////////////////////////////////////////
+    // // Export POINTS + DT edges + SA edges
+    // ////////////////////////////////////////////
+    //
+    // std::string outPlotFile = "triangulations_output.csv";
+    // std::ofstream plotOut(outPlotFile);
+    //
+    // if (!plotOut) {
+    //     std::cerr << "Could not write to file.\n";
+    // } else {
+    //
+    //     //points
+    //     plotOut << "x,y\n";
+    //     for (const auto& p : gs.points)
+    //         plotOut << p.first << "," << p.second << "\n";
+    //
+    //     // DT edges
+    //     plotOut << "\n#DT_EDGES\n";
+    //     plotOut << "u,v\n";
+    //     for (const auto& e : dt.edges)  // note: using original DT stored in dt
+    //         plotOut << e.u << "," << e.v << "\n";
+    //
+    //     // SA edges
+    //     plotOut << "\n#SA_EDGES\n";
+    //     plotOut << "u,v\n";
+    //     for (const auto& e : gs.edges)
+    //         plotOut << e.u << "," << e.v << "\n";
+    //
+    //     plotOut.close();
+    //
+    //     std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
+    // }
+
+
+    ///////////////////////////////////////
     // Summary Output
-    /////////////////////////////////////////
-    // std::cout << "\n===== Run Summary =====\n";
-    // std::cout << "File: " << filename << "\n";
-    // std::cout << "Points: " << gs.points.size() << "\n";
-    // std::cout << "Edges: " << gs.edges.size() << "\n\n";
-    //
-    // std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
-    // std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
-    // std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
-    //
-    // std::cout << "Initial Weight: " << initialWeight << "\n";
-    // std::cout << "Final Weight:   " << finalWeight << "\n";
-    // std::cout << "Improvement:    " << improvement << "%\n";
-    // std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
+    ///////////////////////////////////////
+     std::cout << "\n===== Run Summary =====\n";
+     std::cout << "File: " << filename << "\n";
+     std::cout << "Points: " << gs.points.size() << "\n";
+     std::cout << "Edges: " << gs.edges.size() << "\n\n";
+
+     std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
+     std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
+     std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
+
+     std::cout << "Initial Weight: " << initialWeight << "\n";
+     std::cout << "Final Weight:   " << finalWeight << "\n";
+     std::cout << "Improvement:    " << improvement << "%\n";
+     std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
 
     ///////////////////////////////////////////
     // Export final triangulation for plotting
@@ -118,7 +150,9 @@ int main(int argc, char** argv) {
    // << improvement << ","          // improvement percentage
    // << sa.totalAccepted            // number of accepted flips
     //<< "\n";
-    std::cout << "RESULT," << finalWeight << "," << saTimeMs << "\n";
+
+
+    // std::cout << "RESULT," << finalWeight << "," << saTimeMs << "\n";
 
 
     return 0;
