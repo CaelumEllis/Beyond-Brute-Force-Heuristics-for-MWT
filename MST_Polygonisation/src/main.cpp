@@ -44,31 +44,24 @@ int main(int argc, char** argv) {
      * s2/ convert into our nodes & create adj list
      */
     PointPairType convexHullPoints = GrahamScan::findConvexHull(pointPairs);
-    //std::cout << "CONVEX HULL POINTS: \n";
-   // for (auto p : convexHullPoints) {
-    //    std::cout << "POINT (" << p.first << ", " << p.second << ")\n";
-   // }
     std::vector<size_t> convexHullNodes(convexHullPoints.size());
     std::transform(convexHullPoints.begin(), convexHullPoints.end(), convexHullNodes.begin(),
     [&](const auto &p) { return complete.getNodeForPoint(p); });
-    // find edges
+   
     // todo replace this with a better way of finding the convex hull's weight
     double convexHullWeight = GrahamScan::findConvexWeight(convexHullPoints);
-   // std::cout << "CONVEX HULL WEIGHT: " << convexHullWeight << "\n";
+    // std::cout << "CONVEX HULL WEIGHT: " << convexHullWeight << "\n";
     // mst: kruskals from graph. we can assume every node is included lol :3 yaaay msts
     std::vector<std::vector<size_t>> mstEdges = complete.kruskalMST();
 
     // adds edges to complete polygons (accounting for leaf nodes not connected to the hull)
+    // comment this out if unnecessary/testing old vers.
     complete.fixTUC(mstEdges, convexHullNodes);
     double MSTWeight = complete.computeAdjListWeight(mstEdges);
     // iterate through all leaf nodes, find each leaf node that is NOT in the convex hull nodes
-    
 
-    //std::cout << "MST WEIGHT: " << MSTWeight << "\n";
     // add edges of mst and hull tgt, and process into a graph (with adj list, points) (can remove weights here)
     std::vector<std::vector<size_t>> edgeSumList = complete.mergeAdjListAndConvex(mstEdges, convexHullNodes);
-    
-    complete.fixTUC(edgeSumList, convexHullNodes);
 
     // the edge weight to add to the final is actually here rip
     double totalWeight = complete.computeAdjListWeight(edgeSumList);
