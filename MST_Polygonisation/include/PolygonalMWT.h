@@ -9,6 +9,7 @@ using namespace std;
 
 /**
  * Original DP MWT calculation, with splits added (vector version)
+ * Adapted from geeks4geeks
  */
 
 namespace PolygonalMWT {
@@ -28,55 +29,23 @@ double cost(vector<Point> points, size_t i, size_t j, size_t k)
     return dist(p1, p2) + dist(p2, p3) + dist(p3, p1);
 }
 
-struct TriangulationResult {
-    double cost;
-    vector<pair<size_t, size_t>> edges; 
-};
-
-void printEdges(const vector<pair<size_t, size_t>> &edges) {
-    std::cout << "EDGES " << "\n";
-    for (auto &e : edges) {
-        std::cout << e.first << "-" << e.second << "\n";
-    }
-}
-// Helper to extract edges from split table (using pointer to first element)
-void extractEdges(size_t* split, size_t n, size_t i, size_t j, vector<pair<size_t, size_t>>& edges) {
-    if (j < i+2) return;
-    
-    size_t k = split[i * n + j];  // Access 2D array as 1D
-    edges.push_back({i, k});
-    edges.push_back({k, j});
-    
-    extractEdges(split, n, i, k, edges);
-    extractEdges(split, n, k, j, edges);
-}
-
-TriangulationResult mTC(vector<Point> points, size_t n)
+double mTC(vector<Point> points, size_t n)
 {
-   // There must be at least 3 points to form a triangle
    if (n < 3)
-      return {0.0, {}};
+      return 0;
    
-   std::cout << "n = " << n << "\n";
-   
-   // table to store results of subproblems.  table[i][j] stores cost of
-   // triangulation of points from i to j.
+   // dp table
    double table[n][n];
-   
-   // split[i][j] stores the k value that gave optimal triangulation for points i to j
+   // edges
    size_t split[n][n];
 
-   // Fill table using above recursive formula. Note that the table
-   // is filled in diagonal fashion i.e., from diagonal elements to
-   // table[0][n-1] which is the result.
    for (size_t gap = 0; gap < n; gap++)
    {
       for (size_t i = 0, j = gap; j < n; i++, j++)
       {
           if (j < i+2) {
               table[i][j] = 0.0;
-              split[i][j] = 0;  // No split needed
-              std::cout << "zeroed\n";
+              split[i][j] = 0; 
           } else {
               table[i][j] = numeric_limits<double>::max();
               split[i][j] = 0;
@@ -86,25 +55,15 @@ TriangulationResult mTC(vector<Point> points, size_t n)
                   double val = table[i][k] + table[k][j] + cost(points,i,j,k);
                   if (table[i][j] > val) {
                       table[i][j] = val;
-                      split[i][j] = k;  // Remember which k was optimal
+                      split[i][j] = k; 
                   }
               }
-              std::cout << "new " << i << " " << j << "\n";
           }
       }
    }
+ 
    
-   // Backtrack to find all edges
-   vector<pair<size_t, size_t>> edges;
-   extractEdges(&split[0][0], n, 0, n-1, edges);
-   
-   // Add the polygon boundary edges (these are implicit in the triangulation)
-   for (size_t i = 0; i < n-1; i++) {
-       edges.push_back({i, i+1});
-   }
-   edges.push_back({n-1, 0});  // Close the polygon
-   
-   return {table[0][n-1], edges};
+   return table[0][n-1];
 }
 
 

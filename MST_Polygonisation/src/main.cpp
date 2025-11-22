@@ -13,10 +13,6 @@
 #include "PointHash.h"
 #include "PointNodeHasher.h"
 using namespace std;
-struct TriangulationResult {
-    double cost;
-    vector<pair<size_t, size_t>> edges;  
-};
 
 
 int main(int argc, char** argv) {
@@ -61,7 +57,9 @@ int main(int argc, char** argv) {
    // std::cout << "CONVEX HULL WEIGHT: " << convexHullWeight << "\n";
     // mst: kruskals from graph. we can assume every node is included lol :3 yaaay msts
     std::vector<std::vector<size_t>> mstEdges = complete.kruskalMST();
-    // complete.fixTUC(mstEdges, convexHullNodes);
+
+    // adds edges to complete polygons (accounting for leaf nodes not connected to the hull)
+    complete.fixTUC(mstEdges, convexHullNodes);
     double MSTWeight = complete.computeAdjListWeight(mstEdges);
     // iterate through all leaf nodes, find each leaf node that is NOT in the convex hull nodes
     
@@ -69,7 +67,9 @@ int main(int argc, char** argv) {
     //std::cout << "MST WEIGHT: " << MSTWeight << "\n";
     // add edges of mst and hull tgt, and process into a graph (with adj list, points) (can remove weights here)
     std::vector<std::vector<size_t>> edgeSumList = complete.mergeAdjListAndConvex(mstEdges, convexHullNodes);
+    
     complete.fixTUC(edgeSumList, convexHullNodes);
+
     // the edge weight to add to the final is actually here rip
     double totalWeight = complete.computeAdjListWeight(edgeSumList);
     //std::cout << "COMBINED WEIGHT : " << totalWeight << "\n";
@@ -87,11 +87,11 @@ int main(int argc, char** argv) {
         std::transform(v.begin(), v.end(),facePointList.begin(),
         [&](const auto &p) { return complete.getPointForNode(p); });
         
-        auto [totalDiag, totalEdges] = PolygonalMWT::mTC(facePointList, facePointList.size());
+        auto totalDiag = PolygonalMWT::mTC(facePointList, facePointList.size());
     
         //std::cout << "TOTAL DIAG: " << totalDiag << "\n";
         auto boundaryWeight = FaceFinder::computePointBoundaryWeight(facePointList);
-        PolygonalMWT::printEdges(totalEdges);
+       
         //std::cout<< "WEIGHT OF BOUNDARY: " << boundaryWeight;
         auto internalDiag = ((totalDiag - boundaryWeight) / 2);
         //std::cout << "INTERNAL DIAG: " << internalDiag << "\n";
