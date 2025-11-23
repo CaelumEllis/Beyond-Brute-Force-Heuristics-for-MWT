@@ -1,0 +1,2 @@
+dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
+convex_3k.pnt,3000,DT_CES_SA,3667.156,23.033890335763978,3635.22,3703.54,7082.105,5,5

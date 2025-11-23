@@ -86,8 +86,8 @@ def plot_generated_triangulation(csv_path):
     plt.scatter(xs, ys, s=20, color="black")
 
     # label points
-    for idx, (x, y) in enumerate(points):
-        plt.text(x + 0.7, y + 0.7, str(idx), fontsize=7)
+    # for idx, (x, y) in enumerate(points):
+    #     plt.text(x + 0.7, y + 0.7, str(idx), fontsize=7)
 
     plt.gca().set_aspect("equal", adjustable="box")
     plt.title(os.path.basename(csv_path))
