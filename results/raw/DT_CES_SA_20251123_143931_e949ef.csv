@@ -1,0 +1,17 @@
+dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
+latin_hypercube_2k.pnt,2000,DT_CES_SA,16166.7,0.0,16166.7,16166.7,3873.807,1,1
+latin_hypercube_3k.pnt,3000,DT_CES_SA,19750.4,0.0,19750.4,19750.4,6763.39,1,1
+latin_hypercube_50.pnt,50,DT_CES_SA,2452.11,0.0,2452.11,2452.11,52.128,1,1
+latin_hypercube_500.pnt,500,DT_CES_SA,8218.48,0.0,8218.48,8218.48,707.374,1,1
+line_10K_D.pnt,10000,DT_CES_SA,1255.58,0.0,1255.58,1255.58,475328.87,1,1
+line_10K_I.pnt,10000,DT_CES_SA,0.0,0.0,0.0,0.0,7.17,1,1
+line_noise_1k.pnt,1000,DT_CES_SA,2638.31,0.0,2638.31,2638.31,1694.815,1,1
+line_noise_200.pnt,200,DT_CES_SA,1462.15,0.0,1462.15,1462.15,276.877,1,1
+line_noise_25.pnt,25,DT_CES_SA,818.644,0.0,818.644,818.644,31.627,1,1
+line_noise_2k.pnt,2000,DT_CES_SA,3216.29,0.0,3216.29,3216.29,3811.617,1,1
+line_noise_3k.pnt,3000,DT_CES_SA,3827.63,0.0,3827.63,3827.63,7012.044,1,1
+line_noise_50.pnt,50,DT_CES_SA,1014.45,0.0,1014.45,1014.45,77.044,1,1
+line_noise_500.pnt,500,DT_CES_SA,2160.21,0.0,2160.21,2160.21,748.543,1,1
+near_convex_1k.pnt,1000,DT_CES_SA,4998.46,0.0,4998.46,4998.46,1686.336,1,1
+near_convex_200.pnt,200,DT_CES_SA,3111.53,0.0,3111.53,3111.53,229.068,1,1
+near_convex_25.pnt,25,DT_CES_SA,1224.49,0.0,1224.49,1224.49,15.018,1,1

@@ -1,0 +1,12 @@
+dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
+C_10K_D.pnt,10000,MST_Polygonisation,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1
+C_10K_I.pnt,10000,MST_Polygonisation,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1
+Ci_10K_D.pnt,10000,MST_Polygonisation,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1
+Ci_10K_I.pnt,10000,MST_Polygonisation,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1
+convex_1k.pnt,1000,MST_Polygonisation,2877.5,0.0,2877.5,2877.5,37354.32,1,1
+convex_200.pnt,200,MST_Polygonisation,2149.78,0.0,2149.78,2149.78,62.008,1,1
+convex_25.pnt,25,MST_Polygonisation,2270.65,0.0,2270.65,2270.65,2.245,1,1
+convex_2k.pnt,2000,MST_Polygonisation,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1
+convex_3k.pnt,3000,MST_Polygonisation,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1
+convex_50.pnt,50,MST_Polygonisation,1621.33,0.0,1621.33,1621.33,3.203,1,1
+convex_500.pnt,500,MST_Polygonisation,2563.34,0.0,2563.34,2563.34,2181.264,1,1

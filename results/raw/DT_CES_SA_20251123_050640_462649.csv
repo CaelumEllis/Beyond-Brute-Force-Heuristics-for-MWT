@@ -1,0 +1,3 @@
+dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
+C_10K_D.pnt,10000,DT_CES_SA,191.3793,1.4740054307905404,189.8,193.336,118196.493,10,10
+C_10K_I.pnt,10000,DT_CES_SA,2778808000.0,15508195.768689536,2751540000.0,2803040000.0,21.577,10,10

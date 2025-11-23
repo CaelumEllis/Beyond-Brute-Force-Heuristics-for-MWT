@@ -29,42 +29,39 @@ double cost(vector<Point> points, size_t i, size_t j, size_t k)
     return dist(p1, p2) + dist(p2, p3) + dist(p3, p1);
 }
 
-double mTC(vector<Point> points, size_t n)
+    double mTC(vector<Point> points, size_t n)
 {
-   if (n < 3)
-      return 0;
-   
-   // dp table
-   double table[n][n];
-   // edges
-   size_t split[n][n];
+    if (n < 3) return 0;
 
-   for (size_t gap = 0; gap < n; gap++)
-   {
-      for (size_t i = 0, j = gap; j < n; i++, j++)
-      {
-          if (j < i+2) {
-              table[i][j] = 0.0;
-              split[i][j] = 0; 
-          } else {
-              table[i][j] = numeric_limits<double>::max();
-              split[i][j] = 0;
-              
-              for (size_t k = i+1; k < j; k++)
-              {
-                  double val = table[i][k] + table[k][j] + cost(points,i,j,k);
-                  if (table[i][j] > val) {
-                      table[i][j] = val;
-                      split[i][j] = k; 
-                  }
-              }
-          }
-      }
-   }
- 
-   
-   return table[0][n-1];
+    vector<vector<double>> table(n, vector<double>(n, 0.0));
+    vector<vector<size_t>> split(n, vector<size_t>(n, 0));
+
+    for (size_t gap = 0; gap < n; gap++)
+    {
+        for (size_t i = 0, j = gap; j < n; i++, j++)
+        {
+            if (j < i+2) {
+                table[i][j] = 0.0;
+                split[i][j] = 0;
+            } else {
+                table[i][j] = numeric_limits<double>::max();
+                split[i][j] = 0;
+
+                for (size_t k = i+1; k < j; k++)
+                {
+                    double val = table[i][k] + table[k][j] + cost(points,i,j,k);
+                    if (val < table[i][j]) {
+                        table[i][j] = val;
+                        split[i][j] = k;
+                    }
+                }
+            }
+        }
+    }
+
+    return table[0][n-1];
 }
+
 
 
 } // namespace PolygonalMWT

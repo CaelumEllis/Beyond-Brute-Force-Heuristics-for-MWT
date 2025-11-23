@@ -1,0 +1,5 @@
+dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
+C_100K_D.pnt,100000,DT_ONLY,18787.8,0.0,18787.8,18787.8,2770834.628,1,1
+C_100K_I.pnt,100000,DT_ONLY,0.0,0.0,0.0,0.0,38.49,1,1
+C_10K_D.pnt,10000,DT_ONLY,197.063,0.0,197.063,197.063,599.176,1,1
+C_10K_I.pnt,10000,DT_ONLY,2816630000.0,0.0,2816630000.0,2816630000.0,8.106,1,1
