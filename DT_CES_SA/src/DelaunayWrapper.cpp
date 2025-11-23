@@ -7,8 +7,7 @@
 #include <set>
 #include <EdgeKey.h>
 
-DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, double>>& points)
-{
+DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, double>>& points) {
     DTResult result;
     std::unordered_set<EdgeKey, EdgeKeyHash> uniquePairs;
     // std::set<std::pair<int,int>> uniquePairs;
@@ -58,8 +57,6 @@ DTResult DelaunayWrapper::translateOutput(const std::vector<std::pair<double, do
             std::sqrt(dx * dx + dy * dy)
         });
     }
-
-
     return result;
 }
 

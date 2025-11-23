@@ -11,19 +11,9 @@
 double SimulatedAnnealing::computeWeight(const GraphState& gs) {
     double sum = 0;
     for (const auto& e : gs.edges)
-        sum += e.weight;  // simple smoothness metric
+        sum += e.weight;  // smoothness metric
     return sum;
 }
-
-// static double computeWeightChange(const GraphState& gs, const FlipResult& flip) {
-//     const Edge* oldEdge = gs.getEdge(flip.b, flip.d);
-//     double oldLen2 = oldEdge ? oldEdge->weight * oldEdge->weight : 0;
-//
-//     const Edge* newEdge = gs.getEdge(flip.a, flip.c);
-//     double newLen2 = newEdge ? newEdge->weight * newEdge->weight : 0;
-//
-//     return newLen2 - oldLen2;
-// }
 
 void SimulatedAnnealing::configureDynamic(const GraphState& gs, const std::vector<Edge>& candidates) {
 
@@ -76,8 +66,7 @@ double SimulatedAnnealing::computeWeightChange(const GraphState& gs, const FlipR
 }
 
 
-void SimulatedAnnealing::run(GraphState& gs)
-{
+void SimulatedAnnealing::run(GraphState& gs) {
     auto candidates = CandidateEdgeFilter::buildCandidateSet(gs);
     std::mt19937 rng(std::random_device{}());
 
@@ -88,12 +77,13 @@ void SimulatedAnnealing::run(GraphState& gs)
 
     for (int i = 0; i < maxIterations && T > minTemperature; i++) {
 
-        if (candidates.size() < 0.3 * gs.edges.size())
+        if (candidates.size() < 0.3 * gs.edges.size()) {
             candidates = CandidateEdgeFilter::buildCandidateSet(gs);
+        }
 
         const Edge& e = candidates[rng() % candidates.size()];
         auto flip = FlipCriteria::isFlipLegal(gs, e.u, e.v);
-        if (!flip.legal) continue;
+        if (!flip.legal) { continue;}
 
         double delta = computeWeightChange(gs, flip);
         bool accept = (delta < 0) || (exp(-delta / T) > ((double)rng() / rng.max()));
@@ -129,13 +119,11 @@ void SimulatedAnnealing::run(GraphState& gs)
 void SimulatedAnnealing::greedyImprove(GraphState& gs) {
 
     bool improved = true;
-
     // Initial candidate list
     auto candidates = CandidateEdgeFilter::buildCandidateSet(gs);
 
     while (improved) {
         improved = false;
-
         // If too many candidates became invalid, rebuild from scratch
         if (candidates.size() < 0.3 * gs.edges.size()) {
             candidates = CandidateEdgeFilter::buildCandidateSet(gs);
@@ -143,13 +131,12 @@ void SimulatedAnnealing::greedyImprove(GraphState& gs) {
 
         for (const auto& e : candidates) {
             auto flip = FlipCriteria::isFlipLegal(gs, e.u, e.v);
-            if (!flip.legal) continue;
+            if (!flip.legal) { continue;}
 
             double delta = computeWeightChange(gs, flip);
             // if the proposed flip is better, accept it
             if (delta < 0) {
                 gs.FlipEdge(flip);
-
                 // Update candidate list incrementally after the flip
                 CandidateEdgeFilter::updateCandidatesAfterFlip(candidates, gs, flip);
 

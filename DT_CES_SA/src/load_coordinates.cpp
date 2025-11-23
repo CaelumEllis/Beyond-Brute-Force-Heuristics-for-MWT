@@ -29,7 +29,6 @@ std::vector<Coordinate> loadCoordinatesFromFile(const std::string& filename) {
         }
         coordinates.push_back({x, y});
     }
-
     return coordinates;
 }
 

@@ -10,26 +10,22 @@
 
 using EdgePtr = const Edge*;
 
-std::vector<Edge> CandidateEdgeFilter::buildCandidateSet(
-    const GraphState& gs)
-{
-    return buildCandidateSet(gs, defaultPolicy);
+std::vector<Edge> CandidateEdgeFilter::buildCandidateSet(const GraphState& gs) {
+    return buildCandidateSet(gs, defaultEdgeSelectionPolicy);
 }
 
 void CandidateEdgeFilter::updateCandidatesAfterFlip(
     std::vector<Edge>& candidates,
     const GraphState& gs,
     const FlipResult& flip,
-    bool aggressiveUpdate)
-{
-    updateCandidatesAfterFlip(candidates, gs, flip, defaultPolicy, aggressiveUpdate);
+    bool aggressiveUpdate) {
+    updateCandidatesAfterFlip(candidates, gs, flip, defaultEdgeSelectionPolicy, aggressiveUpdate);
 }
 
 bool CandidateEdgeFilter::isGoodCandidate(
     const Edge& e,
     const GraphState& gs,
-    const CandidatePolicy& policy)
-{
+    const CandidatePolicy& policy) {
     // Take Global top fraction
     // Compare length rank against threshold
     static thread_local std::vector<double> allLengths;
@@ -43,8 +39,7 @@ bool CandidateEdgeFilter::isGoodCandidate(
     std::sort(allLengths.begin(), allLengths.end(), std::greater<>());
 
     // always pick at least one edge
-    size_t cutoffIndex = std::max<size_t>(1,
-    static_cast<size_t>(std::floor(policy.globalFraction * allLengths.size())));
+    size_t cutoffIndex = std::max<size_t>(1,static_cast<size_t>(std::floor(policy.globalFraction * allLengths.size())));
 
     double cutoffLength = allLengths[cutoffIndex - 1];
 
@@ -75,8 +70,7 @@ bool CandidateEdgeFilter::isGoodCandidate(
 
 std::vector<Edge> CandidateEdgeFilter::buildCandidateSet(
     const GraphState& gs,
-    const CandidatePolicy& policy)
-{
+    const CandidatePolicy& policy) {
     std::vector<Edge> result;
     if (gs.edges.empty()) return result;
 
@@ -100,8 +94,8 @@ void CandidateEdgeFilter::updateCandidatesAfterFlip(
     const GraphState& gs,
     const FlipResult& flip,
     const CandidatePolicy& policy,
-    bool aggressiveUpdate)
-{
+    bool aggressiveUpdate) {
+
     if (!flip.legal) return;
 
     // Full rebuild if aggressive flag is set
@@ -113,7 +107,7 @@ void CandidateEdgeFilter::updateCandidatesAfterFlip(
     EdgeKey oldDiag(flip.b, flip.d);
     EdgeKey newDiag(flip.a, flip.c);
 
-    // ---- 1. Remove old edge if present ----
+    // Remove old edge if present
     candidates.erase(
         std::remove_if(
             candidates.begin(), candidates.end(),
@@ -122,14 +116,14 @@ void CandidateEdgeFilter::updateCandidatesAfterFlip(
         candidates.end()
     );
 
-    // ---- 2. Insert new diagonal if qualifies ----
+    // Insert new diagonal if qualifies
     if (const Edge* e = gs.getEdge(newDiag.u,newDiag.v);
         e && isGoodCandidate(*e, gs, policy))
     {
         candidates.push_back(*e);
     }
 
-    // ---- 3. Local adjustments: only update edges touching (a,b,c,d) ----
+    // Local adjustments: only update edges touching (a,b,c,d)
     std::unordered_set<EdgeKey, EdgeKeyHash> seen;
 
     for (int v : { flip.a, flip.b, flip.c, flip.d }) {
