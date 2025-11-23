@@ -103,4 +103,4 @@ GLOBAL AVG (excluding                     | -2.25%|  20.98% | 296.10%|
 outlier set)
 
 GLOBAL AVG (excluding                     
-all 10ks)                                 |2.26%| 18.36% | 283.80%|
+all 10ks)                                 |-2.26%| 18.36% | 283.80%|
