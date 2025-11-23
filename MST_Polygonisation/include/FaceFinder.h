@@ -127,8 +127,15 @@ std::vector<std::vector<size_t>> find_faces(std::vector<Point> &vertices, std::v
         }
     }
     if (!faces.empty()) {
+        // sort faces by size descending
+        std::sort(faces.begin(), faces.end(),
+                [](const std::vector<size_t>& a, const std::vector<size_t>& b) {
+                    return a.size() > b.size();
+                });
+
+        // remove the first one (largest)
         faces.erase(faces.begin());
-    }
+    } 
     // debug output
     std::cout << "FINAL: Total faces found: " << faces.size() << std::endl;
     for (size_t i = 0; i < faces.size(); i++) {
