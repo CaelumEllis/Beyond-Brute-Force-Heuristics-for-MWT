@@ -100,4 +100,7 @@ Avg - zigzag            |             --- |                                 -4.5
 GLOBAL AVG              |             --- |                                 -2.24% |                                          +1535.36% |                                           +8204.82% |      N/A
 
 GLOBAL AVG (excluding                     | -2.25%|  20.98% | 296.10%|
-10k set)
+outlier set)
+
+GLOBAL AVG (excluding                     
+all 10ks)                                 |2.26%| 18.36% | 283.80%|
