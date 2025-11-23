@@ -1,2 +1,0 @@
-dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
-GIS_4897_F.pnt,4897,DT_CES_SA,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,NO_OUTPUT,0,1

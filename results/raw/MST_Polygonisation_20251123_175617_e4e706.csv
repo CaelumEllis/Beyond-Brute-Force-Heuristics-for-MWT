@@ -1,0 +1,4 @@
+dataset,size,algorithm,mean,stddev,min,max,runtime_ms,successful_runs,requested_runs
+convex_2k.pnt,2000,MST_Polygonisation,3191.66,0.0,3191.66,3191.66,3099.326,1,1
+convex_3k.pnt,3000,MST_Polygonisation,6684.54,0.0,6684.54,6684.54,17911.615,1,1
+fractal_2k.pnt,2000,MST_Polygonisation,11716.1,0.0,11716.1,11716.1,6572.573,1,1
