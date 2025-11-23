@@ -6,6 +6,9 @@
 #define DELAUNAYWRAPPER_H
 
 // Uses SimpleDelaunay (MIT License) - https://github.com/jeanbega/SimpleDelaunay
+// Original implementation by Caelum was O(n^2), this version is O(n log n) average
+// and O(n^2) worst case.
+// true O(n log n) exists, but couldn't find a good repos for it.
 #include "SimpleDelaunay.h"
 #include <vector>
 #include <utility>

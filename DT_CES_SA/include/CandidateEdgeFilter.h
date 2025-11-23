@@ -11,7 +11,6 @@
 class CandidateEdgeFilter {
 
 public:
-
     struct CandidatePolicy {
         int    perVertex;
         double globalFraction;
@@ -49,7 +48,7 @@ private:
         const CandidatePolicy& policy
     );
 
-    inline static CandidatePolicy defaultPolicy{4, 0.50};
+    inline static CandidatePolicy defaultEdgeSelectionPolicy{4, 0.50};
 
 
 };

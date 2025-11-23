@@ -106,38 +106,38 @@ int main(int argc, char** argv) {
     ///////////////////////////////////////
     // Summary Output
     ///////////////////////////////////////
-     // std::cout << "\n===== Run Summary =====\n";
-     // std::cout << "File: " << filename << "\n";
-     // std::cout << "Points: " << gs.points.size() << "\n";
-     // std::cout << "Edges: " << gs.edges.size() << "\n\n";
-     //
-     // std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
-     // std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
-     // std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
-     //
-     // std::cout << "Initial Weight: " << initialWeight << "\n";
-     // std::cout << "Final Weight:   " << finalWeight << "\n";
-     // std::cout << "Improvement:    " << improvement << "%\n";
-     // std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
+     std::cout << "\n===== Run Summary =====\n";
+     std::cout << "File: " << filename << "\n";
+     std::cout << "Points: " << gs.points.size() << "\n";
+     std::cout << "Edges: " << gs.edges.size() << "\n\n";
 
-    ///////////////////////////////////////////
-    // Export final triangulation for plotting
-    ///////////////////////////////////////////
-    std::string outPlotFile = filename + "_generated_triangulation.csv";
-    std::ofstream plotOut(outPlotFile);
+     std::cout << "DT Time (ms):        " << dtTimeMs << "\n";
+     std::cout << "Candidate Time (ms): " << candidateTimeMs << "\n";
+     std::cout << "SA Time (ms):        " << saTimeMs << "\n\n";
 
-    plotOut << "index,x,y\n";
-    for (size_t i = 0; i < gs.points.size(); i++) {
-        plotOut << i << "," << gs.points[i].first << "," << gs.points[i].second << "\n";
-    }
+     std::cout << "Initial Weight: " << initialWeight << "\n";
+     std::cout << "Final Weight:   " << finalWeight << "\n";
+     std::cout << "Improvement:    " << improvement << "%\n";
+     std::cout << "Accepted Flips: " << sa.totalAccepted << "\n";
 
-    plotOut << "\n#EDGES u,v\n";
-    for (const auto& e : gs.edges) {
-        plotOut << e.u << "," << e.v << "\n";
-    }
-
-    plotOut.close();
-    std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
+    // ///////////////////////////////////////////
+    // // Export final triangulation for plotting
+    // ///////////////////////////////////////////
+    // std::string outPlotFile = filename + "_generated_triangulation.csv";
+    // std::ofstream plotOut(outPlotFile);
+    //
+    // plotOut << "index,x,y\n";
+    // for (size_t i = 0; i < gs.points.size(); i++) {
+    //     plotOut << i << "," << gs.points[i].first << "," << gs.points[i].second << "\n";
+    // }
+    //
+    // plotOut << "\n#EDGES u,v\n";
+    // for (const auto& e : gs.edges) {
+    //     plotOut << e.u << "," << e.v << "\n";
+    // }
+    //
+    // plotOut.close();
+    // std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
 
 
     /////////////////////////////////////////
