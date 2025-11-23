@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     double finalWeight = sa.computeWeight(gs);
     double improvement = (initialWeight - finalWeight) / initialWeight * 100.0;
 
-    std::cout << "RESULT," << finalWeight << "\n";
+    // std::cout << "RESULT," << finalWeight << "\n";
 // un comment to here
 //
 //     // ////////////////////////////////////////////
@@ -123,20 +123,22 @@ int main(int argc, char** argv) {
     ///////////////////////////////////////////
     // Export final triangulation for plotting
     ///////////////////////////////////////////
-    // std::string outPlotFile = filename + "_generated_triangulation.csv";
-    // std::ofstream plotOut(outPlotFile);
-    //
-    // plotOut << "x,y\n";
-    // for (const auto& p : gs.points)
-    //     plotOut << p.first << "," << p.second << "\n";
-    //
-    // plotOut << "\n#EDGES u,v\n";
-    // for (const auto& e : gs.edges)
-    //     plotOut << e.u << "," << e.v << "\n";
-    //
-    // plotOut.close();
-    //
-    // std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
+    std::string outPlotFile = filename + "_generated_triangulation.csv";
+    std::ofstream plotOut(outPlotFile);
+
+    plotOut << "index,x,y\n";
+    for (size_t i = 0; i < gs.points.size(); i++) {
+        plotOut << i << "," << gs.points[i].first << "," << gs.points[i].second << "\n";
+    }
+
+    plotOut << "\n#EDGES u,v\n";
+    for (const auto& e : gs.edges) {
+        plotOut << e.u << "," << e.v << "\n";
+    }
+
+    plotOut.close();
+    std::cout << "PLOT_OUTPUT," << outPlotFile << "\n";
+
 
     /////////////////////////////////////////
     // Output for CSV Data Collection
