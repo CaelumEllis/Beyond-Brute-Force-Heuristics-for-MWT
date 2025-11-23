@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from collections import defaultdict
 
 RAW_DIR = "results/raw"
 OUTPUT_DIR = "results/summary"
@@ -7,129 +8,130 @@ OUTPUT_FILE = os.path.join(OUTPUT_DIR, "matrix_summary.txt")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Load CSVs
+# Load CSV files
 csv_files = [f for f in os.listdir(RAW_DIR) if f.endswith(".csv")]
 if not csv_files:
-    print(" No CSV files found.")
+    print("No CSV files found.")
     exit()
 
-dfs = []
+records = []
+
 for file in csv_files:
-    algo = file.replace(".csv", "")
     df = pd.read_csv(os.path.join(RAW_DIR, file))
-
-    # Ensure mean values are numeric (convert errors → NaN)
+    df["algorithm"] = os.path.splitext(file)[0]
     df["mean"] = pd.to_numeric(df["mean"], errors="coerce")
+    df["successful_runs"] = pd.to_numeric(df.get("successful_runs", 1), errors="coerce").fillna(1).astype(int)
+    records.append(df)
 
-    if df.empty:
-        continue
+combined = pd.concat(records, ignore_index=True)
 
-    df["algorithm"] = algo
-    dfs.append(df)
+# Weighted aggregation
+weighted = (
+    combined.groupby(["dataset", "size", "algorithm"])
+    .apply(lambda g: (g["mean"] * g["successful_runs"]).sum() / g["successful_runs"].sum()
+    if not g["mean"].isna().all() else float("nan"))
+    .reset_index(name="weighted_mean")
+)
 
-combined = pd.concat(dfs, ignore_index=True)
-combined = combined[["dataset", "size", "algorithm", "mean"]]
+# Pivot
+pivot = weighted.pivot(index="dataset", columns="algorithm", values="weighted_mean")
 
-# Identify brute force baseline
-brute = combined[combined["algorithm"].str.contains("brute", case=False)]
-baseline = {}
+# Force DT baseline first
+cols = list(pivot.columns)
+baseline_col = [c for c in cols if "DT_ONLY" in c.upper()]
+others = sorted([c for c in cols if c not in baseline_col])
+pivot = pivot[baseline_col + others]
 
-if brute.empty:
-    print("⚠ No brute force results found — skipping percent comparison.")
-else:
-    baseline = brute.set_index("dataset")["mean"].to_dict()
+# Apply formatting with safe zero baseline handling
+def format_val(row, col):
+    algo_val = row[col]
+    base_val = row[baseline_col[0]]
 
-def calc_diff(row):
-    # handles missing brute force
-    if not baseline:
-        return None
-    base = baseline.get(row["dataset"])
-    if base is None or pd.isna(row["mean"]):
-        return None
-    return ((row["mean"] - base) / base) * 100
+    if pd.isna(algo_val):
+        return "NO OUTPUT"
 
-combined["percent_diff"] = combined.apply(calc_diff, axis=1)
+    if pd.isna(base_val):
+        return f"{algo_val:.4f} (baseline missing)"
 
-# Pivot to matrix form
-pivot = combined.pivot(index="dataset", columns="algorithm", values="mean")
-cols_sorted = sorted(pivot.columns, key=lambda x: "0" if "brute" in x.lower() else x)
-pivot = pivot[cols_sorted]
+    if base_val == 0:
+        return f"{algo_val:.4f} (baseline returned 0 - invalid)"
 
-formatted = pivot.astype(object)
+    pct = ((algo_val - base_val) / base_val) * 100
+    return f"{algo_val:.4f} ({pct:+.2f}%)"
 
-# Format output values
-for dataset in pivot.index:
-    for algo in pivot.columns:
-        val = pivot.loc[dataset, algo]
-        if pd.isna(val):
-            formatted.loc[dataset, algo] = "NO OUTPUT"
-            continue
+for col in others:
+    pivot[col] = pivot.apply(lambda r: format_val(r, col), axis=1)
 
-        if "brute" in algo.lower():
-            formatted.loc[dataset, algo] = f"{val:.4f}"
-        else:
-            pct = calc_diff(pd.Series({"dataset": dataset, "mean": val}))
-            if pct is None:
-                formatted.loc[dataset, algo] = f"{val:.4f} (N/A)"
-            else:
-                formatted.loc[dataset, algo] = f"{val:.4f} ({pct:+.2f}%)"
+pivot[baseline_col[0]] = pivot[baseline_col[0]].apply(
+    lambda v: f"{v:.4f}" if pd.notna(v) else "NO OUTPUT"
+)
 
-formatted = formatted.reset_index().rename(columns={"dataset": "Dataset"})
+pivot.reset_index(inplace=True)
+pivot.rename(columns={"dataset": "Dataset"}, inplace=True)
 
-# Determine dataset category (convex, fractal, gaussian...)
-combined["category"] = combined["dataset"].apply(lambda x: x.split("_")[0])
+# Category detection
+pivot["category"] = pivot["Dataset"].apply(lambda x: x.split("_")[0])
 
+# Build output rows
 output_rows = []
+algos = pivot.columns.tolist()[2:]  # skip dataset + category
 
-for category in sorted(combined["category"].unique()):
-    group_rows = formatted[formatted["Dataset"].str.startswith(category)].copy()
-    output_rows.append(group_rows)
+for cat, group in pivot.groupby("category"):
+    output_rows.append(group.drop(columns=["category"]))
 
-    # compute category avg
-    avg_row = {"Dataset": f"Avg - {category}"}
-    for algo in pivot.columns:
-        if "brute" in algo.lower():
-            avg_row[algo] = "---"
-            continue
+    if len(group) > 1:
+        summary = {"Dataset": f"Avg - {cat}"}
+        summary[baseline_col[0]] = "---"
 
-        vals = combined[(combined["category"] == category) & (combined["algorithm"] == algo)]["percent_diff"].dropna()
-        avg_row[algo] = f"{vals.mean():+.2f}%" if (not vals.empty and baseline) else "N/A"
+        for col in algos:
+            vals = []
+            for v in group[col]:
+                if isinstance(v, str) and "(" in v and "invalid" not in v:
+                    try:
+                        pct = float(v.split("(")[1].split("%")[0])
+                        vals.append(pct)
+                    except:
+                        pass
+            summary[col] = f"{sum(vals)/len(vals):+.2f}%" if vals else "N/A"
+        output_rows.append(pd.DataFrame([summary]))
 
-    output_rows.append(pd.DataFrame([avg_row]))
-
-# Global summary
+# Global average
 global_row = {"Dataset": "GLOBAL AVG"}
-for algo in pivot.columns:
-    if "brute" in algo.lower():
-        global_row[algo] = "---"
-    else:
-        vals = combined[combined["algorithm"] == algo]["percent_diff"].dropna()
-        global_row[algo] = f"{vals.mean():+.2f}%" if (not vals.empty and baseline) else "N/A"
+global_row[baseline_col[0]] = "---"
+
+for col in algos:
+    vals = []
+    for v in pivot[col]:
+        if isinstance(v, str) and "(" in v and "invalid" not in v:
+            try:
+                pct = float(v.split("(")[1].split("%")[0])
+                vals.append(pct)
+            except:
+                pass
+    global_row[col] = f"{sum(vals)/len(vals):+.2f}%" if vals else "N/A"
 
 output_rows.append(pd.DataFrame([global_row]))
-final_table = pd.concat(output_rows, ignore_index=True)
+final = pd.concat(output_rows, ignore_index=True)
 
-# alignment formatting
-col_widths = {col: max(len(str(x)) for x in final_table[col].tolist() + [col]) for col in final_table.columns}
+# Console/FILE formatting
+col_widths = {col: max(len(str(x)) for x in final[col].tolist() + [col]) for col in final.columns}
 
-def format_row(row):
+def fmt(row):
     return " | ".join(
-        str(row[col]).rjust(col_widths[col]) if col != "Dataset" else str(row[col]).ljust(col_widths[col])
-        for col in final_table.columns
+        str(row[col]).ljust(col_widths[col]) if col == "Dataset"
+        else str(row[col]).rjust(col_widths[col])
+        for col in final.columns
     )
 
 sep = "-" * (sum(col_widths.values()) + 3 * (len(col_widths) - 1))
 
 with open(OUTPUT_FILE, "w") as f:
-    # header
-    header = {col: col for col in final_table.columns}
-    f.write(format_row(header) + "\n")
+    header = {col: col for col in final.columns}
+    f.write(fmt(header) + "\n")
     f.write(sep + "\n")
-
-    for _, row in final_table.iterrows():
+    for _, row in final.iterrows():
         if row["Dataset"].startswith("Avg") or row["Dataset"] == "GLOBAL AVG":
             f.write(sep + "\n")
-        f.write(format_row(row) + "\n")
+        f.write(fmt(row) + "\n")
 
-print("\nSummary file created.")
-print(f"Saved at: {OUTPUT_FILE}")
+print(f"\nSummary file created → {OUTPUT_FILE}")
