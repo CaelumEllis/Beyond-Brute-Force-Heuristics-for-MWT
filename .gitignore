@@ -1,1 +1,16 @@
+# CMake build output
+CMakeFiles/
+Makefile
+cmake_install.make
+progress.make
+progress.marks
+
+# Object files
+*.o
+*.o.d
+
+# Build directories
+build/
+out/
+
 .idea/
