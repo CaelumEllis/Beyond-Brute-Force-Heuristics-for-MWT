@@ -1,0 +1,19 @@
+#Trying to remove historical accidental cmake artifact commits from repo 
+#languages chart
+
+# Ignore build artifacts
+CMakeFiles/** linguist-generated=true
+build/** linguist-generated=true
+out/** linguist-generated=true
+
+# Ignore generated makefiles
+**/Makefile linguist-generated=true
+**/*.make linguist-generated=true
+**/cmake_install.make linguist-generated=true
+
+# Ignore object files
+**/*.o linguist-generated=true
+**/*.o.d linguist-generated=true
+
+# Treat CMake as non-primary
+CMakeLists.txt linguist-language=CMake
